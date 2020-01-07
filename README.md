@@ -23,4 +23,4 @@ sentio:
   filename: /dev/ttyUSB0
 ```
 ## Links
-[Documentation](https://github.com/astrandb/sentio/blob/master/docs.md)
+[Documentation](https://github.com/astrandb/sentio/wiki)
