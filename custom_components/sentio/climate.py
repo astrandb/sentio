@@ -108,8 +108,6 @@ class SaunaClimate(ClimateDevice):
         """Set new target temperature."""
         temp = kwargs.get(ATTR_TEMPERATURE)
         self._hassdd.set_sauna_val(int(temp))
-#        sauna = SentioPro('/dev/ttyUSB1', 57600)
-#        sauna._write_read('set sauna val {}\n'.format(int(temp)))
         _LOGGER.debug(self.name + " New target temp => %s", temp)
         return
 
