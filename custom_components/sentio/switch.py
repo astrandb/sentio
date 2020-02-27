@@ -26,7 +26,6 @@ class SaunaOn(SwitchDevice):
         """Initialize the sensor."""
         self._hassdd = hass.data[DOMAIN]['sentio']
         self._unique_id = DOMAIN + '_' + 'sauna_on'
-#        self._state = hass.data[DOMAIN]['sauna_on']
     
     @property
     def should_poll(self):
