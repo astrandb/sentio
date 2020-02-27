@@ -54,7 +54,7 @@ class SaunaLight(Light):
 
     @property
     def is_on(self):
-        return self.self._hassdd.light_is_on
+        return self._hassdd.light_is_on
 
     async def async_turn_on(self, **kwargs):
         _LOGGER.debug(self.name + " Turn_on")

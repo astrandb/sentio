@@ -58,7 +58,7 @@ class SaunaOn(SwitchDevice):
 
     @property
     def is_on(self):
-        return self.self._hassdd.is_on
+        return self._hassdd.is_on
 
     async def async_turn_on(self, **kwargs):
         _LOGGER.debug(self.name + " Turn_on")
