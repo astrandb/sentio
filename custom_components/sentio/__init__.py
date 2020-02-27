@@ -64,8 +64,6 @@ def setup(hass, config):
 
     # Data that you want to share with your platforms
     hass.data[DOMAIN] = {
-        'target_temperature': 90,
-        'hvac_mode': HVAC_MODE_OFF,
     }
     conf = config.get(DOMAIN)
     serial_port = conf.get(CONF_FILENAME)
@@ -77,8 +75,6 @@ def setup(hass, config):
 
     def poll_update(event_time):
       hass.data[DOMAIN]['sentio'].update()
-      hass.data[DOMAIN]['target_temperature'] = hass.data[DOMAIN]['sentio'].sauna_val
-      hass.data[DOMAIN]['hvac_mode'] = hass.data[DOMAIN]['sentio'].hvac_mode
       _LOGGER.debug("Calling dispatcher_send")
       dispatcher_send(hass, SIGNAL_UPDATE_SENTIO)
 
