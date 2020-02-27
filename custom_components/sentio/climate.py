@@ -97,7 +97,6 @@ class SaunaClimate(ClimateDevice):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
         _LOGGER.debug(self.name + " hvac_mode = %s", hvac_mode)
-        # sauna = SentioPro('/dev/ttyUSB1', 57600)
         if hvac_mode == HVAC_MODE_HEAT:
             self._hassdd.set_sauna(STATE_ON)
         else:
@@ -108,13 +107,11 @@ class SaunaClimate(ClimateDevice):
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temp = kwargs.get(ATTR_TEMPERATURE)
-        sauna = SentioPro('/dev/ttyUSB1', 57600)
-        sauna._write_read('set sauna val {}\n'.format(int(temp)))
-
+        self._hassdd.set_sauna_val(int(temp))
+#        sauna = SentioPro('/dev/ttyUSB1', 57600)
+#        sauna._write_read('set sauna val {}\n'.format(int(temp)))
         _LOGGER.debug(self.name + " New target temp => %s", temp)
         return
 
     async def async_update(self):
         _LOGGER.debug(self.name + "climate async_update 1 %s", self._hassdd.hvac_mode)
- #       self._state = self.hass.data[DOMAIN]['hvac_mode']
-        # _LOGGER.debug(self.name + "climate async_update 2 %s", self._hassdd.hvac_mode)

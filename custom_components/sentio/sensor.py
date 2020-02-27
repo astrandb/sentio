@@ -28,7 +28,6 @@ class BenchSensor(Entity):
         """Initialize the sensor."""
         self._unique_id = DOMAIN + '_' + 'bench_sensor'
         self._hassdd = hass.data[DOMAIN]['sentio']
-        # self._state = hass.data[DOMAIN]['bench_temperature']
 
     async def async_added_to_hass(self):
         """Register callbacks."""
@@ -70,8 +69,6 @@ class BenchSensor(Entity):
 
     async def async_update(self):
         _LOGGER.debug(self.name + " async_update 1 %s", self._hassdd.bench_temperature)
-        # self._state = self.hass.data[DOMAIN]['bench_temperature']
-        # _LOGGER.debug(self.name + " async_update 2 %s", self._state)
 
 class HeaterSensor(Entity):
     """Representation of a sensor."""
@@ -80,7 +77,6 @@ class HeaterSensor(Entity):
         """Initialize the sensor."""
         self._unique_id = DOMAIN + '_' + 'heater_sensor'
         self._hassdd = hass.data[DOMAIN]['sentio']
-#        self._state = hass.data[DOMAIN]['heater_temperature']
 
     async def async_added_to_hass(self):
         """Register callbacks."""
@@ -123,6 +119,4 @@ class HeaterSensor(Entity):
 
     async def async_update(self):
         _LOGGER.debug(self.name + " async_update 1 %s", self._hassdd.heater_temperature)
-        # self._state = self.hass.data[DOMAIN]['heater_temperature']
-        # _LOGGER.debug(self.name + " async_update 2 %s", self._state)
         return

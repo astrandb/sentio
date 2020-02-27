@@ -26,7 +26,7 @@ class SaunaOn(SwitchDevice):
         """Initialize the sensor."""
         self._hassdd = hass.data[DOMAIN]['sentio']
         self._unique_id = DOMAIN + '_' + 'sauna_on'
-        self._state = hass.data[DOMAIN]['sauna_on']
+#        self._state = hass.data[DOMAIN]['sauna_on']
     
     @property
     def should_poll(self):
@@ -39,7 +39,7 @@ class SaunaOn(SwitchDevice):
     @callback
     def _update_callback(self):
         """Call update method."""
-        _LOGGER.debug(self.name + " update_callback state: %s", self._state)
+        _LOGGER.debug(self.name + " update_callback state: %s", self._hassdd.is_on)
         self.async_schedule_update_ha_state(True)
 
     @property
@@ -58,36 +58,19 @@ class SaunaOn(SwitchDevice):
 
     @property
     def is_on(self):
-        return self._state
-
-    @property
-    def device_state_attributes(self):
-        """Return extra state."""
-        data = OrderedDict()
-        data['Attr1'] = 11
-        data['Attr2'] = 'Twentytwoo'
-        return data
+        return self.self._hassdd.is_on
 
     async def async_turn_on(self, **kwargs):
         _LOGGER.debug(self.name + " Turn_on")
-#        sauna = SentioPro('/dev/ttyUSB1', 57600)
         self._hassdd.set_sauna(STATE_ON)
-        self._state = self._hassdd.is_on
-        self.hass.data[DOMAIN]['sauna_on'] = self._state
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_turn_off(self, **kwargs):
         _LOGGER.debug(self.name + " Turn_off")
-#        sauna = SentioPro('/dev/ttyUSB1', 57600)
         self._hassdd.set_sauna(STATE_OFF)
-        self._state = self._hassdd.is_on
-        self.hass.data[DOMAIN]['sauna_on'] = self._state
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_update(self):
-        _LOGGER.debug(self.name + " Switch async_update 1 %s", self._state)
-        self._state = self._hassdd.is_on
-        _LOGGER.debug(self.name + " Switch async_update 2 %s", self._state)
-
+        return

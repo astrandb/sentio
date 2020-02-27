@@ -79,17 +79,7 @@ def setup(hass, config):
 
     hass.data[DOMAIN]['sentio'] = SentioPro(serial_port, serial_baudrate)
 
-    _attributes = {
-      SAUNA: STATE_UNKNOWN,
-      LIGHT: STATE_UNKNOWN,
-      FAN: STATE_UNKNOWN,
-      BENCH_TEMP: STATE_UNKNOWN,
-    }
- 
     def poll_update(event_time):
-      """Update from API"""
-#      _LOGGER.debug("Updating from Sentio Controller...")
-#      sauna = SentioPro(serial_port, serial_baudrate)
       hass.data[DOMAIN]['sentio'].update()
       hass.data[DOMAIN]['sauna_on'] = hass.data[DOMAIN]['sentio'].is_on
       hass.data[DOMAIN]['light_on'] = hass.data[DOMAIN]['sentio'].light_is_on

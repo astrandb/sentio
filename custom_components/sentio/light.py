@@ -54,40 +54,17 @@ class SaunaLight(Light):
 
     @property
     def is_on(self):
-        return self._state
-
-    # @property
-    # def device_state_attributes(self):
-    #     """Return extra state."""
-    #     data = OrderedDict()
-    #     data['Attr1'] = 11
-    #     data['Attr2'] = 'Twentytwoo'
-    #     return data
+        return self.self._hassdd.light_is_on
 
     async def async_turn_on(self, **kwargs):
         _LOGGER.debug(self.name + " Turn_on")
-#        sauna = SentioPro('/dev/ttyUSB1', 57600)
         self._hassdd.set_light(STATE_ON)
-#        self._state = True
-        self._state = self._hassdd.light_is_on
-        self.hass.data[DOMAIN]['light_on'] = self._state
-        _LOGGER.debug(self.name + " turn_on State: %s", self._state)
         self.async_schedule_update_ha_state(True)
 
     async def async_turn_off(self, **kwargs):
         _LOGGER.debug(self.name + " Turn_off")
-#        sauna = SentioPro('/dev/ttyUSB1', 57600)
         self._hassdd.set_light(STATE_OFF)
-        self._state = self._hassdd.light_is_on
-        self.hass.data[DOMAIN]['light_on'] = self._state
-        _LOGGER.debug(self.name + " turn_off State: %s", self._state)
         self.async_schedule_update_ha_state(True)
 
     async def async_update(self):
-        """Fetch new state data for this switch.
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        _LOGGER.debug(self.name + " async_update 1 %s", self._state)
-        self._state = self.hass.data[DOMAIN]['light_on']
-        _LOGGER.debug(self.name + " async_update 2 %s", self._state)
-
+        return
