@@ -64,8 +64,6 @@ def setup(hass, config):
 
     # Data that you want to share with your platforms
     hass.data[DOMAIN] = {
-        'bench_temperature': 23,
-        'heater_temperature': 60,
         'target_temperature': 90,
         'hvac_mode': HVAC_MODE_OFF,
         'sauna_on' : False,
@@ -84,8 +82,6 @@ def setup(hass, config):
       hass.data[DOMAIN]['sauna_on'] = hass.data[DOMAIN]['sentio'].is_on
       hass.data[DOMAIN]['light_on'] = hass.data[DOMAIN]['sentio'].light_is_on
       hass.data[DOMAIN]['target_temperature'] = hass.data[DOMAIN]['sentio'].sauna_val
-      hass.data[DOMAIN]['bench_temperature'] = hass.data[DOMAIN]['sentio'].bench_temperature
-      hass.data[DOMAIN]['heater_temperature'] = hass.data[DOMAIN]['sentio'].heater_temperature
       hass.data[DOMAIN]['hvac_mode'] = hass.data[DOMAIN]['sentio'].hvac_mode
       _LOGGER.debug("Calling dispatcher_send")
       dispatcher_send(hass, SIGNAL_UPDATE_SENTIO)

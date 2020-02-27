@@ -76,11 +76,11 @@ class SaunaClimate(ClimateDevice):
 
     @property
     def current_temperature(self):
-        return self.hass.data[DOMAIN]['bench_temperature']
+        return self._hassdd.bench_temperature
 
     @property
     def target_temperature(self):
-        return self.hass.data[DOMAIN]['target_temperature']
+        return self._hassdd.target_temperature
 
     @property
     def target_temperature_step(self):
