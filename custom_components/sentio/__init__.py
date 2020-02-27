@@ -18,7 +18,7 @@ from homeassistant.helpers.event import track_time_interval
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'sentio'
-VERSION = '0.0.2'
+VERSION = '0.0.4'
 SIGNAL_UPDATE_SENTIO = "sentio_update"
 
 CONF_BAUDRATE = 'baudrate'
