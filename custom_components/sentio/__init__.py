@@ -66,8 +66,6 @@ def setup(hass, config):
     hass.data[DOMAIN] = {
         'target_temperature': 90,
         'hvac_mode': HVAC_MODE_OFF,
-        'sauna_on' : False,
-        'light_on' : False
     }
     conf = config.get(DOMAIN)
     serial_port = conf.get(CONF_FILENAME)
@@ -79,8 +77,6 @@ def setup(hass, config):
 
     def poll_update(event_time):
       hass.data[DOMAIN]['sentio'].update()
-      hass.data[DOMAIN]['sauna_on'] = hass.data[DOMAIN]['sentio'].is_on
-      hass.data[DOMAIN]['light_on'] = hass.data[DOMAIN]['sentio'].light_is_on
       hass.data[DOMAIN]['target_temperature'] = hass.data[DOMAIN]['sentio'].sauna_val
       hass.data[DOMAIN]['hvac_mode'] = hass.data[DOMAIN]['sentio'].hvac_mode
       _LOGGER.debug("Calling dispatcher_send")

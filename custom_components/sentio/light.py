@@ -26,7 +26,6 @@ class SaunaLight(Light):
         """Initialize the sensor."""
         self._hassdd = hass.data[DOMAIN]['sentio']
         self._unique_id = DOMAIN + '_' + 'saunalight'
-        self._state = hass.data[DOMAIN]['light_on']
     
     @property
     def should_poll(self):
@@ -39,7 +38,7 @@ class SaunaLight(Light):
     @callback
     def _update_callback(self):
         """Call update method."""
-        _LOGGER.debug(self.name + " update_callback state: %s", self._state)
+        _LOGGER.debug(self.name + " update_callback state: %s", self._hassdd.light_is_on)
         self.async_schedule_update_ha_state(True)
 
     @property
