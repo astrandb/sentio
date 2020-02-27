@@ -1,9 +1,9 @@
 {
   "domain": "sentio",
   "name": "Sentiotec Pro Sauna Controller",
-  "documentation": "https://www.home-assistant.io/integrations/sentiotec_pro",
+  "documentation": "https://github.com/astrandb/sentio",
   "requirements": [
-    "pyserial==3.1.1"
+    "pysentio==0.0.42"
   ],
   "dependencies": [],
   "codeowners": ["@astrandb"]
