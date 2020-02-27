@@ -1,6 +1,7 @@
 {
   "domain": "sentio",
   "name": "Sentiotec Pro Sauna Controller",
+  "config_flow": true,
   "documentation": "https://github.com/astrandb/sentio",
   "requirements": [
     "pysentio==0.0.42"
