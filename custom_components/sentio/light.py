@@ -47,6 +47,17 @@ class SaunaLight(Light):
         return 'Sauna Light'
 
     @property
+    def device_info(self):
+        """Return information about the device."""
+        return {
+            "name": "Namn 1", #self._light_features.alias,
+            "model": "Namn 2", #self._light_features.model,
+            "manufacturer": "Sentiotec",
+#            "connections": {(dr.CONNECTION_NETWORK_MAC, self._light_features.mac)},
+            "sw_version": "0.0.0",
+        }
+
+    @property
     def unique_id(self):
         """Return the ID of this device."""
         return self._unique_id
