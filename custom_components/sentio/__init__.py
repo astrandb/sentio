@@ -91,30 +91,30 @@ async def async_setup(hass, config):
     
     return True
 
-    async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-      """Set up sentio sauna from a config entry."""
-      # TODO Store an API object for your platforms to access
-      # hass.data[DOMAIN][entry.entry_id] = MyApi(...)
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+  """Set up sentio sauna from a config entry."""
+  # TODO Store an API object for your platforms to access
+  # hass.data[DOMAIN][entry.entry_id] = MyApi(...)
 
-      for component in PLATFORMS:
-        hass.async_create_task(
-          hass.config_entries.async_forward_entry_setup(entry, component)
+  for component in PLATFORMS:
+    hass.async_create_task(
+      hass.config_entries.async_forward_entry_setup(entry, component)
+    )
+
+  return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
+    """Unload a config entry."""
+    unload_ok = all(
+        await asyncio.gather(
+            *[
+                hass.config_entries.async_forward_entry_unload(entry, component)
+                for component in PLATFORMS
+            ]
         )
+    )
+    if unload_ok:
+        hass.data[DOMAIN].pop(entry.entry_id)
 
-      return True
-
-
-  async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
-      """Unload a config entry."""
-      unload_ok = all(
-          await asyncio.gather(
-              *[
-                  hass.config_entries.async_forward_entry_unload(entry, component)
-                  for component in PLATFORMS
-              ]
-          )
-      )
-      if unload_ok:
-          hass.data[DOMAIN].pop(entry.entry_id)
-
-      return unload_ok
+    return unload_ok
