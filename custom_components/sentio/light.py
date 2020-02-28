@@ -44,7 +44,7 @@ class SaunaLight(Light):
     @property
     def name(self):
         """Return the name of the light."""
-        return 'Sauna light'
+        return 'Sauna Light'
 
     @property
     def unique_id(self):
