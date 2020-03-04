@@ -6,27 +6,30 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.components.switch import SwitchDevice
 from homeassistant.core import callback
-from . import DOMAIN, SIGNAL_UPDATE_SENTIO
-from pysentio import SentioPro
+from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
+from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 _LOGGER = logging.getLogger(__name__)
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the sensor platform."""
-    # We only want this platform to be set up via discovery.
-    if discovery_info is None:
-        return
-    add_entities([SaunaOn(hass)])
+    return
 
+async def async_setup_entry(hass, entry, async_add_entities):
+    def get_entities():
+        return [SaunaOn(hass, entry)]
+
+    async_add_entities(await hass.async_add_job(get_entities), True)
 
 class SaunaOn(SwitchDevice):
     """Representation of a switch."""
 
-    def __init__(self, hass):
+    def __init__(self, hass, entry):
         """Initialize the sensor."""
-        self._hassdd = hass.data[DOMAIN]['sentio']
+        self._entryid = entry.entry_id
         self._unique_id = DOMAIN + '_' + 'sauna_on'
-    
+        self._api = hass.data[DOMAIN][entry.entry_id]
+
     @property
     def should_poll(self):
         return False
@@ -38,13 +41,25 @@ class SaunaOn(SwitchDevice):
     @callback
     def _update_callback(self):
         """Call update method."""
-        _LOGGER.debug(self.name + " update_callback state: %s", self._hassdd.is_on)
+        _LOGGER.debug(self.name + " update_callback state: %s", self._api.is_on)
         self.async_schedule_update_ha_state(True)
 
     @property
     def name(self):
         """Return the name of the sensor."""
         return 'Sauna'
+
+    @property
+    def device_info(self):
+        return {
+            "config_entry_id": self._entryid,
+            "connections": {(DOMAIN, '4322')},
+            "identifiers": {(DOMAIN, '4321')},
+            "manufacturer": MANUFACTURER,
+            "model": 'Pro {}'.format(self._api.type),
+            "name": 'Sauna controller',
+            "sw_version": self._api.sw_version,
+        }
 
     @property
     def unique_id(self):
@@ -57,19 +72,20 @@ class SaunaOn(SwitchDevice):
 
     @property
     def is_on(self):
-        return self._hassdd.is_on
+        return self._api.is_on
 
     async def async_turn_on(self, **kwargs):
         _LOGGER.debug(self.name + " Turn_on")
-        self._hassdd.set_sauna(STATE_ON)
+        self._api.set_sauna(PYS_STATE_ON)
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_turn_off(self, **kwargs):
         _LOGGER.debug(self.name + " Turn_off")
-        self._hassdd.set_sauna(STATE_OFF)
+        self._api.set_sauna(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_update(self):
-        return
+        _LOGGER.debug(self.name + " Switch async_update 1 %s", self._api.is_on)
+

@@ -4,18 +4,18 @@ import logging
 import voluptuous as vol
 
 from homeassistant import config_entries, core, exceptions
+from pysentio import SentioPro
 
-from . import DOMAIN  # pylint:disable=unused-import
+from .const import BAUD_RATE, DEFAULT_SERIAL_PORT, DOMAIN, SERIAL_PORT  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
 # TODO adjust the data schema to the data that you need
-DATA_SCHEMA = vol.Schema({"host": str, "username": str, "password": str})
+DATA_SCHEMA = vol.Schema({vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): str})
 
 
-class PlaceholderHub:
-    """Placeholder class to make tests pass.
-
+class SentioHub:
+    """
     TODO Remove this placeholder class and replace with things from your PyPI package.
     """
 
@@ -23,10 +23,12 @@ class PlaceholderHub:
         """Initialize."""
         self.host = host
 
-    async def authenticate(self, username, password) -> bool:
+    async def connect(self, serial_port) -> bool:
         """Test if we can authenticate with the host."""
+        ss = SentioPro(serial_port, BAUD_RATE)
+        ss.get_config()
+        self._type = ss.type
         return True
-
 
 async def validate_input(hass: core.HomeAssistant, data):
     """Validate the user input allows us to connect.
@@ -41,10 +43,10 @@ async def validate_input(hass: core.HomeAssistant, data):
     #     your_validate_func, data["username"], data["password"]
     # )
 
-    hub = PlaceholderHub(data["host"])
+    hub = SentioHub(data[SERIAL_PORT])
 
-    if not await hub.authenticate(data["username"], data["password"]):
-        raise InvalidAuth
+    if not await hub.connect(data[SERIAL_PORT]):
+        raise CannotConnect
 
     # If you cannot connect:
     # throw CannotConnect
@@ -52,7 +54,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     # InvalidAuth
 
     # Return info that you want to store in the config entry.
-    return {"title": "Name of the device"}
+    return {"title": "Sentio Pro {}".format(hub._type)}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -60,13 +62,16 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
     # TODO pick one of the available connection classes in homeassistant/config_entries.py
-    CONNECTION_CLASS = config_entries.CONN_CLASS_UNKNOWN
+    CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
         errors = {}
         if user_input is not None:
             try:
+                await self.async_set_unique_id('sentio_xxx')
+                self._abort_if_unique_id_configured()
+
                 info = await validate_input(self.hass, user_input)
 
                 return self.async_create_entry(title=info["title"], data=user_input)

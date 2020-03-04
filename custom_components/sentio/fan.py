@@ -1,11 +1,9 @@
-"""Light component for Sentio sauna controller"""
-
 import logging
 from collections import OrderedDict
 
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
-from homeassistant.components.light import Light, ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS
+from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
@@ -14,20 +12,20 @@ from pysentio import PYS_STATE_ON, PYS_STATE_OFF
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    def get_lights():
-        return [SaunaLight(hass, entry)]
+    def get_fans():
+        return [SaunaFan(hass, entry)]
 
-    async_add_entities(await hass.async_add_job(get_lights), True)
+    async_add_entities(await hass.async_add_job(get_fans), True)
 
 
-class SaunaLight(Light):
-    """Representation of a light."""
+class SaunaFan(FanEntity):
+    """Representation of a fan."""
 
     def __init__(self, hass, entry):
         """Initialize the sensor."""
         self._entryid = entry.entry_id
         self._api = hass.data[DOMAIN][entry.entry_id]
-        self._unique_id = DOMAIN + '_' + 'saunalight'
+        self._unique_id = DOMAIN + '_' + 'saunafan'
 
     @property
     def device_info(self):
@@ -52,13 +50,13 @@ class SaunaLight(Light):
     @callback
     def _update_callback(self):
         """Call update method."""
-        _LOGGER.debug(self.name + " update_callback state: %s", self._api.light_is_on)
+        _LOGGER.debug(self.name + " update_callback state: %s", self._api.fan)
         self.async_schedule_update_ha_state(True)
 
     @property
     def name(self):
-        """Return the name of the light."""
-        return 'Sauna Light'
+        """Return the name of the fan."""
+        return 'Sauna Fan'
 
     @property
     def unique_id(self):
@@ -68,27 +66,33 @@ class SaunaLight(Light):
     @property
     def supported_features(self):
         feat = 0
-        if self._api.config('light dimming') == 'on':
-            feat = feat | SUPPORT_BRIGHTNESS
+        if self._api.config('fan dimming') == 'on':
+            feat = feat | SUPPORT_SET_SPEED
         return feat
 
     @property
     def is_on(self):
-        return self._api.light_is_on
+        return self._api.fan
 
     async def async_turn_on(self, **kwargs):
         _LOGGER.debug(self.name + " Turn_on")
-        self._api.set_light(PYS_STATE_ON)
+        self._api.set_fan(PYS_STATE_ON)
         self.async_schedule_update_ha_state(True)
 
     async def async_turn_off(self, **kwargs):
         _LOGGER.debug(self.name + " Turn_off")
-        self._api.set_light(PYS_STATE_OFF)
+        self._api.set_fan(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)
 
     @property
-    def brightness(self):
-        return int(50 * 2.55)
+    def speed(self):
+        return str(int(100 * 2.55))
+
+    @property
+    def speed_list(self):
+        data = OrderedDict()
+        data = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"]
+        return data
 
     async def async_update(self):
         return

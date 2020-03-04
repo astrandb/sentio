@@ -1,11 +1,11 @@
 {
   "config": {
-    "title": "Sentiotec Sauna",
+    "title": "Sentio sauna controller",
     "step": {
       "user": {
         "title": "Connect to the device",
         "data": {
-          "host": "Host"
+          "serial_port": "Serial port"
         }
       }
     },
