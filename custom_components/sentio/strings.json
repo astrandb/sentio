@@ -5,7 +5,8 @@
       "user": {
         "title": "Connect to the device",
         "data": {
-          "serial_port": "Serial port"
+          "serial_port": "Serial port",
+          "disable_fan" : "Disable fan"
         }
       }
     },

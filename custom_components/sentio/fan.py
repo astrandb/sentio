@@ -6,14 +6,17 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
-from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
+from .const import DOMAIN, FAN_DISABLED, MANUFACTURER, SIGNAL_UPDATE_SENTIO
 from pysentio import PYS_STATE_ON, PYS_STATE_OFF
 
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
     def get_fans():
-        return [SaunaFan(hass, entry)]
+        sensors = []
+        if not entry.data.get(FAN_DISABLED):
+            sensors.append(SaunaFan(hass, entry))
+        return sensors
 
     async_add_entities(await hass.async_add_job(get_fans), True)
 

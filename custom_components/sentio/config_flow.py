@@ -6,12 +6,15 @@ import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
 from pysentio import SentioPro
 
-from .const import BAUD_RATE, DEFAULT_SERIAL_PORT, DOMAIN, SERIAL_PORT  # pylint:disable=unused-import
+from .const import BAUD_RATE, DEFAULT_SERIAL_PORT, DOMAIN, FAN_DISABLED, SERIAL_PORT  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
 # TODO adjust the data schema to the data that you need
-DATA_SCHEMA = vol.Schema({vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): str})
+DATA_SCHEMA = vol.Schema({
+    vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): str,
+    vol.Required(FAN_DISABLED, default=False): bool,
+    })
 
 
 class SentioHub:
