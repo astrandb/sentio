@@ -1,6 +1,6 @@
 {
 "name": "Sentio",
 "render_readme": true,
-"domains": ["climate", "light", "sensor", "switch"],
+"domains": ["climate", "fan", "light", "sensor", "switch"],
 "iot_class": "Local Polling"
 }
