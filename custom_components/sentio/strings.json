@@ -8,7 +8,7 @@
           "serial_port": "Serial port",
           "disable_fan" : "Disable fan"
         },
-        "description" : "Enter the serial port (RS485) that connects to the Sentio controller."
+        "description" : "Enter the serial (RS485) port that connects to the Sentio controller."
       }
     },
     "error": {
