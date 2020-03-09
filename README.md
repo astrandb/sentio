@@ -10,7 +10,9 @@ In order to connect the Sentio Pro sauna controller you need a serial port with 
 The user running Homeassistant should be added to group dialout.
 ## Installation
 ### Install with HACS (Recommended)
-Search for Sentio and install it directly from HACS. HACS will keep track of updates and you can easily upgrade to latest version.
+Add this repository as a custom repo in HACS settings.
+
+Search for Sentio integration and install it directly from HACS. HACS will keep track of updates and you can easily upgrade to latest version.
 
 HACS can be found [here](https://hacs.xyz/)
 ### Install manually
