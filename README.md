@@ -16,7 +16,7 @@ Search for Sentio integration and install it directly from HACS. HACS will keep 
 
 HACS can be found [here](https://hacs.xyz/)
 ### Install manually
-If you want to install manually, you probably already know how to procced.
+If you want to install manually, you probably already know how to proceed.
 ## Configuration
 Goto Configuration->Integrations and press (+)
 Enter the port to use. On Linux typically /dev/ttyUSB0 .
