@@ -4,8 +4,7 @@ import logging
 from collections import OrderedDict
 
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import Entity
-from homeassistant.components.light import Light, ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS
+from homeassistant.components.light import LightEntity, ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
@@ -20,7 +19,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(await hass.async_add_job(get_lights), True)
 
 
-class SaunaLight(Light):
+class SaunaLight(LightEntity):
     """Representation of a light."""
 
     def __init__(self, hass, entry):

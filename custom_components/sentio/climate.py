@@ -3,8 +3,7 @@
 import logging
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS, STATE_OFF, STATE_ON
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
-from homeassistant.helpers.entity import Entity
-from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (CURRENT_HVAC_HEAT, CURRENT_HVAC_IDLE, CURRENT_HVAC_OFF,
                                           HVAC_MODE_HEAT, HVAC_MODE_OFF, SUPPORT_TARGET_TEMPERATURE)
 from homeassistant.core import callback
@@ -21,7 +20,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 
-class SaunaClimate(ClimateDevice):
+class SaunaClimate(ClimateEntity):
 
     def __init__(self, hass, entry):
         """Initialize the device."""

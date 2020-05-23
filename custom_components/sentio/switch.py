@@ -2,9 +2,8 @@ import logging
 from collections import OrderedDict
 
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
-from homeassistant.helpers.entity import Entity
 from homeassistant.const import STATE_OFF, STATE_ON
-from homeassistant.components.switch import SwitchDevice
+from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import callback
 from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
@@ -21,7 +20,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     async_add_entities(await hass.async_add_job(get_entities), True)
 
-class SaunaOn(SwitchDevice):
+class SaunaOn(SwitchEntity):
     """Representation of a switch."""
 
     def __init__(self, hass, entry):
