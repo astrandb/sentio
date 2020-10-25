@@ -1,0 +1,23 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enheten är redan konfigurerad"
+        },
+        "error": {
+            "cannot_connect": "Kunde inte ansluta. Försök igen",
+            "invalid_auth": "Felaktigt användarnamn eller lösenord",
+            "unknown": "Oväntat fel"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "serial_port": "Serieport",
+                    "disable_fan": "Avaktivera fläkt"
+                },
+                "title": "Anslut till enheten",
+                "description": "Ange serieporten (RS485) som ansluter Sentio styrenhet."
+            }
+        },
+        "title": "Sentio sauna styrenhet"
+    }
+}
