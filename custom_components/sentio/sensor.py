@@ -1,8 +1,10 @@
 """Platform for sensor integration."""
-import logging, re
+import logging
+import re
+
 from homeassistant.const import (
-    CONF_NAME,
     CONF_DEVICE_CLASS,
+    CONF_NAME,
     CONF_UNIT_OF_MEASUREMENT,
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_TEMPERATURE,
@@ -54,16 +56,19 @@ SENSOR_TYPES = {
 #     # add_entities([BenchSensor(hass), HeaterSensor(hass)])
 #     return
 
+
 async def async_setup_entry(hass, entry, async_add_entities):
     def get_entities():
         api = hass.data[DOMAIN][entry.entry_id]
         sensors = [HeaterSensor(hass, entry)]
-        if api.config('sens bench') == 'on':
+        if api.config("sens bench") == "on":
             sensors.append(BenchSensor(hass, entry))
-        if re.match('D3', api.type):
+        if re.match("D3", api.type):
             sensors.append(HumiditySensor(hass, entry))
         return sensors
+
     async_add_entities(await hass.async_add_job(get_entities), True)
+
 
 class BenchSensor(Entity):
     """Representation of a sensor."""
@@ -71,7 +76,7 @@ class BenchSensor(Entity):
     def __init__(self, hass, entry):
         """Initialize the sensor."""
         self._entryid = entry.entry_id
-        self._unique_id = DOMAIN + '_' + 'bench_sensor'
+        self._unique_id = DOMAIN + "_" + "bench_sensor"
         self._api = hass.data[DOMAIN][entry.entry_id]
 
     async def async_added_to_hass(self):
@@ -81,13 +86,15 @@ class BenchSensor(Entity):
     @callback
     def _update_callback(self):
         """Call update method."""
-        _LOGGER.debug(self.name + " update_callback state: %s", self._api.bench_temperature)
+        _LOGGER.debug(
+            self.name + " update_callback state: %s", self._api.bench_temperature
+        )
         self.async_schedule_update_ha_state(True)
 
     @property
     def name(self):
         """Return the name of the sensor."""
-        return 'Sauna Bench'
+        return "Sauna Bench"
 
     @property
     def unique_id(self):
@@ -98,11 +105,11 @@ class BenchSensor(Entity):
     def device_info(self):
         return {
             "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, '4322')},
-            "identifiers": {(DOMAIN, '4321')},
+            "connections": {(DOMAIN, "4322")},
+            "identifiers": {(DOMAIN, "4321")},
             "manufacturer": MANUFACTURER,
-            "model": 'Pro {}'.format(self._api.type),
-            "name": 'Sauna controller',
+            "model": "Pro {}".format(self._api.type),
+            "name": "Sauna controller",
             "sw_version": self._api.sw_version,
         }
 
@@ -113,7 +120,7 @@ class BenchSensor(Entity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return  self._api.bench_temperature
+        return self._api.bench_temperature
 
     @property
     def device_class(self):
@@ -128,13 +135,14 @@ class BenchSensor(Entity):
         _LOGGER.debug(self.name + " async_update 1 %s", self._api.bench_temperature)
         return
 
+
 class HeaterSensor(Entity):
     """Representation of a sensor."""
 
     def __init__(self, hass, entry):
         """Initialize the sensor."""
         self._entryid = entry.entry_id
-        self._unique_id = DOMAIN + '_' + 'heater_sensor'
+        self._unique_id = DOMAIN + "_" + "heater_sensor"
         self._api = hass.data[DOMAIN][entry.entry_id]
 
     async def async_added_to_hass(self):
@@ -144,13 +152,15 @@ class HeaterSensor(Entity):
     @callback
     def _update_callback(self):
         """Call update method."""
-        _LOGGER.debug(self.name + " update_callback state: %s", self._api.heater_temperature)
+        _LOGGER.debug(
+            self.name + " update_callback state: %s", self._api.heater_temperature
+        )
         self.async_schedule_update_ha_state(True)
 
     @property
     def name(self):
         """Return the name of the sensor."""
-        return 'Sauna Heater'
+        return "Sauna Heater"
 
     @property
     def unique_id(self):
@@ -161,11 +171,11 @@ class HeaterSensor(Entity):
     def device_info(self):
         return {
             "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, '4322')},
-            "identifiers": {(DOMAIN, '4321')},
+            "connections": {(DOMAIN, "4322")},
+            "identifiers": {(DOMAIN, "4321")},
             "manufacturer": MANUFACTURER,
-            "model": 'Pro {}'.format(self._api.type),
-            "name": 'Sauna controller',
+            "model": "Pro {}".format(self._api.type),
+            "name": "Sauna controller",
             "sw_version": self._api.sw_version,
         }
 
@@ -177,7 +187,7 @@ class HeaterSensor(Entity):
     def state(self):
         """Return the state of the sensor."""
         # self._state = self._api.heater_temp
-        return  self._api.heater_temperature
+        return self._api.heater_temperature
 
     @property
     def device_class(self):
@@ -192,13 +202,14 @@ class HeaterSensor(Entity):
         _LOGGER.debug(self.name + " async_update 1 %s", self._api.heater_temperature)
         return
 
+
 class HumiditySensor(Entity):
     """Representation of a sensor."""
 
     def __init__(self, hass, entry):
         """Initialize the sensor."""
         self._entryid = entry.entry_id
-        self._unique_id = DOMAIN + '_' + 'humidity_sensor'
+        self._unique_id = DOMAIN + "_" + "humidity_sensor"
         self._api = hass.data[DOMAIN][entry.entry_id]
 
     async def async_added_to_hass(self):
@@ -214,7 +225,7 @@ class HumiditySensor(Entity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return 'Sauna Humidity'
+        return "Sauna Humidity"
 
     @property
     def unique_id(self):
@@ -225,11 +236,11 @@ class HumiditySensor(Entity):
     def device_info(self):
         return {
             "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, '4322')},
-            "identifiers": {(DOMAIN, '4321')},
+            "connections": {(DOMAIN, "4322")},
+            "identifiers": {(DOMAIN, "4321")},
             "manufacturer": MANUFACTURER,
-            "model": 'Pro {}'.format(self._api.type),
-            "name": 'Sauna controller',
+            "model": "Pro {}".format(self._api.type),
+            "name": "Sauna controller",
             "sw_version": self._api.sw_version,
         }
 
@@ -240,7 +251,7 @@ class HumiditySensor(Entity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return  self._api.humidity
+        return self._api.humidity
 
     @property
     def device_class(self):
@@ -254,4 +265,3 @@ class HumiditySensor(Entity):
     async def async_update(self):
         _LOGGER.debug(self.name + " async_update 1 %s", self._api.humidity)
         return
-

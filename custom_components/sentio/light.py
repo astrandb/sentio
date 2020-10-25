@@ -3,14 +3,20 @@
 import logging
 from collections import OrderedDict
 
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.components.light import LightEntity, ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS
+from homeassistant.components.light import (
+    ATTR_BRIGHTNESS,
+    SUPPORT_BRIGHTNESS,
+    LightEntity,
+)
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from pysentio import PYS_STATE_OFF, PYS_STATE_ON
+
 from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
-from pysentio import PYS_STATE_ON, PYS_STATE_OFF
 
 _LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
     def get_lights():
@@ -26,17 +32,17 @@ class SaunaLight(LightEntity):
         """Initialize the sensor."""
         self._entryid = entry.entry_id
         self._api = hass.data[DOMAIN][entry.entry_id]
-        self._unique_id = DOMAIN + '_' + 'saunalight'
+        self._unique_id = DOMAIN + "_" + "saunalight"
 
     @property
     def device_info(self):
         return {
             "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, '4322')},
-            "identifiers": {(DOMAIN, '4321')},
+            "connections": {(DOMAIN, "4322")},
+            "identifiers": {(DOMAIN, "4321")},
             "manufacturer": MANUFACTURER,
-            "model": 'Pro {}'.format(self._api.type),
-            "name": 'Sauna controller',
+            "model": "Pro {}".format(self._api.type),
+            "name": "Sauna controller",
             "sw_version": self._api.sw_version,
         }
 
@@ -57,7 +63,7 @@ class SaunaLight(LightEntity):
     @property
     def name(self):
         """Return the name of the light."""
-        return 'Sauna Light'
+        return "Sauna Light"
 
     @property
     def unique_id(self):
@@ -67,7 +73,7 @@ class SaunaLight(LightEntity):
     @property
     def supported_features(self):
         feat = 0
-        if self._api.config('light dimming') == 'on':
+        if self._api.config("light dimming") == "on":
             feat = feat | SUPPORT_BRIGHTNESS
         return feat
 

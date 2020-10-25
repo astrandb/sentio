@@ -1,9 +1,9 @@
 """The sentio sauna integration."""
 import asyncio
 import logging
-import voluptuous as vol
 from datetime import timedelta
 
+import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
@@ -21,6 +21,7 @@ SCAN_INTERVAL = timedelta(seconds=60)
 
 _LOGGER = logging.getLogger(__name__)
 
+
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the sentio sauna component."""
     return True
@@ -37,18 +38,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     # TODO Store an API object for your platforms to access
     hass.data[DOMAIN] = {}
-    hass.data[DOMAIN][entry.entry_id] = SentioPro(entry.data.get(SERIAL_PORT), BAUD_RATE) #MyApi(...)
+    hass.data[DOMAIN][entry.entry_id] = SentioPro(
+        entry.data.get(SERIAL_PORT), BAUD_RATE
+    )  # MyApi(...)
     _api = hass.data[DOMAIN][entry.entry_id]
     _api.get_config()
     _LOGGER.info("SW_version: %s", _api.sw_version)
     device_registry = await dr.async_get_registry(hass)
     device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
-        connections={(DOMAIN, '4322')},
-        identifiers={(DOMAIN, '4321')},
-        manufacturer='Sentiotec a',
-        model='Pro D2 a',
-        name='Sauna controller a',
+        connections={(DOMAIN, "4322")},
+        identifiers={(DOMAIN, "4321")},
+        manufacturer="Sentiotec a",
+        model="Pro D2 a",
+        name="Sauna controller a",
         sw_version=_api.sw_version + " a",
     )
 

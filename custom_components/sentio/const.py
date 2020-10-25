@@ -1,8 +1,8 @@
 """Constants for the sentio sauna integration."""
 
 DOMAIN = "sentio"
-VERSION = '0.0.6'
-SIGNAL_UPDATE_SENTIO = 'update_sentio'
+VERSION = "0.0.6"
+SIGNAL_UPDATE_SENTIO = "update_sentio"
 MANUFACTURER = "Sentiotec"
 DEVICE_NAME = "Sentio Pro Sauna Controller"
 
@@ -13,4 +13,4 @@ BAUD_RATE = 57600
 MIN_SET_TEMP = 30
 MAX_SET_TEMP = 110
 
-FAN_DISABLED = 'disable_fan'
+FAN_DISABLED = "disable_fan"

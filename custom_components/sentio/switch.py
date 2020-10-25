@@ -1,18 +1,21 @@
 import logging
 from collections import OrderedDict
 
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
-from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
-from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
+from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
+from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
+
 _LOGGER = logging.getLogger(__name__)
+
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the sensor platform."""
     return
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
     def get_entities():
@@ -20,13 +23,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     async_add_entities(await hass.async_add_job(get_entities), True)
 
+
 class SaunaOn(SwitchEntity):
     """Representation of a switch."""
 
     def __init__(self, hass, entry):
         """Initialize the sensor."""
         self._entryid = entry.entry_id
-        self._unique_id = DOMAIN + '_' + 'sauna_on'
+        self._unique_id = DOMAIN + "_" + "sauna_on"
         self._api = hass.data[DOMAIN][entry.entry_id]
 
     @property
@@ -46,17 +50,17 @@ class SaunaOn(SwitchEntity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return 'Sauna'
+        return "Sauna"
 
     @property
     def device_info(self):
         return {
             "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, '4322')},
-            "identifiers": {(DOMAIN, '4321')},
+            "connections": {(DOMAIN, "4322")},
+            "identifiers": {(DOMAIN, "4321")},
             "manufacturer": MANUFACTURER,
-            "model": 'Pro {}'.format(self._api.type),
-            "name": 'Sauna controller',
+            "model": "Pro {}".format(self._api.type),
+            "name": "Sauna controller",
             "sw_version": self._api.sw_version,
         }
 
@@ -67,7 +71,7 @@ class SaunaOn(SwitchEntity):
 
     @property
     def icon(self):
-        return 'mdi:radiator'
+        return "mdi:radiator"
 
     @property
     def is_on(self):
@@ -87,4 +91,3 @@ class SaunaOn(SwitchEntity):
 
     async def async_update(self):
         _LOGGER.debug(self.name + " Switch async_update 1 %s", self._api.is_on)
-

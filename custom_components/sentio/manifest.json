@@ -2,11 +2,11 @@
   "domain": "sentio",
   "name": "Sentio sauna",
   "config_flow": true,
-  "documentation": "https://www.home-assistant.io/integrations/sentio",
-  "requirements": ["pysentio==0.0.50"],
-  "ssdp": [],
-  "zeroconf": [],
-  "homekit": {},
-  "dependencies": [],
-  "codeowners": ["@astrandb"]
+  "documentation": "https://github.com/astrandb/sentio",
+  "requirements": [
+    "pysentio==0.0.50"
+  ],
+  "codeowners": [
+    "@astrandb"
+  ]
 }

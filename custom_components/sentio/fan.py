@@ -1,15 +1,17 @@
 import logging
 from collections import OrderedDict
 
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import Entity
-from homeassistant.components.fan import FanEntity, SUPPORT_SET_SPEED
+from homeassistant.components.fan import SUPPORT_SET_SPEED, FanEntity
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity import Entity
+from pysentio import PYS_STATE_OFF, PYS_STATE_ON
+
 from .const import DOMAIN, FAN_DISABLED, MANUFACTURER, SIGNAL_UPDATE_SENTIO
-from pysentio import PYS_STATE_ON, PYS_STATE_OFF
 
 _LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
     def get_fans():
@@ -28,17 +30,17 @@ class SaunaFan(FanEntity):
         """Initialize the sensor."""
         self._entryid = entry.entry_id
         self._api = hass.data[DOMAIN][entry.entry_id]
-        self._unique_id = DOMAIN + '_' + 'saunafan'
+        self._unique_id = DOMAIN + "_" + "saunafan"
 
     @property
     def device_info(self):
         return {
             "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, '4322')},
-            "identifiers": {(DOMAIN, '4321')},
+            "connections": {(DOMAIN, "4322")},
+            "identifiers": {(DOMAIN, "4321")},
             "manufacturer": MANUFACTURER,
-            "model": 'Pro {}'.format(self._api.type),
-            "name": 'Sauna controller',
+            "model": "Pro {}".format(self._api.type),
+            "name": "Sauna controller",
             "sw_version": self._api.sw_version,
         }
 
@@ -59,7 +61,7 @@ class SaunaFan(FanEntity):
     @property
     def name(self):
         """Return the name of the fan."""
-        return 'Sauna Fan'
+        return "Sauna Fan"
 
     @property
     def unique_id(self):
@@ -69,7 +71,7 @@ class SaunaFan(FanEntity):
     @property
     def supported_features(self):
         feat = 0
-        if self._api.config('fan dimming') == 'on':
+        if self._api.config("fan dimming") == "on":
             feat = feat | SUPPORT_SET_SPEED
         return feat
 

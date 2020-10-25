@@ -2,19 +2,26 @@
 import logging
 
 import voluptuous as vol
-
 from homeassistant import config_entries, core, exceptions
 from pysentio import SentioPro
 
-from .const import BAUD_RATE, DEFAULT_SERIAL_PORT, DOMAIN, FAN_DISABLED, SERIAL_PORT  # pylint:disable=unused-import
+from .const import (  # pylint:disable=unused-import
+    BAUD_RATE,
+    DEFAULT_SERIAL_PORT,
+    DOMAIN,
+    FAN_DISABLED,
+    SERIAL_PORT,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
 # TODO adjust the data schema to the data that you need
-DATA_SCHEMA = vol.Schema({
-    vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): str,
-    vol.Required(FAN_DISABLED, default=False): bool,
-    })
+DATA_SCHEMA = vol.Schema(
+    {
+        vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): str,
+        vol.Required(FAN_DISABLED, default=False): bool,
+    }
+)
 
 
 class SentioHub:
@@ -32,6 +39,7 @@ class SentioHub:
         ss.get_config()
         self._type = ss.type
         return True
+
 
 async def validate_input(hass: core.HomeAssistant, data):
     """Validate the user input allows us to connect.
@@ -72,7 +80,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
         if user_input is not None:
             try:
-                await self.async_set_unique_id('sentio_xxx')
+                await self.async_set_unique_id("sentio_xxx")
                 self._abort_if_unique_id_configured()
 
                 info = await validate_input(self.hass, user_input)

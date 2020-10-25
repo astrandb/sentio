@@ -1,16 +1,31 @@
 """Climate component for Sentio sauna controller"""
 
 import logging
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS, STATE_OFF, STATE_ON
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
+
 from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (CURRENT_HVAC_HEAT, CURRENT_HVAC_IDLE, CURRENT_HVAC_OFF,
-                                          HVAC_MODE_HEAT, HVAC_MODE_OFF, SUPPORT_TARGET_TEMPERATURE)
+from homeassistant.components.climate.const import (
+    CURRENT_HVAC_HEAT,
+    CURRENT_HVAC_IDLE,
+    CURRENT_HVAC_OFF,
+    HVAC_MODE_HEAT,
+    HVAC_MODE_OFF,
+    SUPPORT_TARGET_TEMPERATURE,
+)
+from homeassistant.const import ATTR_TEMPERATURE, STATE_OFF, STATE_ON, TEMP_CELSIUS
 from homeassistant.core import callback
-from .const import DOMAIN, MANUFACTURER, MAX_SET_TEMP, MIN_SET_TEMP, SIGNAL_UPDATE_SENTIO
-from pysentio import PYS_STATE_ON, PYS_STATE_OFF
+from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
+from pysentio import PYS_STATE_OFF, PYS_STATE_ON
+
+from .const import (
+    DOMAIN,
+    MANUFACTURER,
+    MAX_SET_TEMP,
+    MIN_SET_TEMP,
+    SIGNAL_UPDATE_SENTIO,
+)
 
 _LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
     def get_climates():
@@ -19,13 +34,11 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(await hass.async_add_job(get_climates), True)
 
 
-
 class SaunaClimate(ClimateEntity):
-
     def __init__(self, hass, entry):
         """Initialize the device."""
         self._entryid = entry.entry_id
-        self._unique_id = DOMAIN + '_' + 'climate'
+        self._unique_id = DOMAIN + "_" + "climate"
         self._api = hass.data[DOMAIN][entry.entry_id]
 
     async def async_added_to_hass(self):
@@ -35,23 +48,25 @@ class SaunaClimate(ClimateEntity):
     @callback
     def _update_callback(self):
         """Call update method."""
-        _LOGGER.debug(self.name + " climate update_callback state: %s", self._api.hvac_mode)
+        _LOGGER.debug(
+            self.name + " climate update_callback state: %s", self._api.hvac_mode
+        )
         self.async_schedule_update_ha_state(True)
 
     @property
     def name(self):
         """Return the name of the sensor."""
-        return 'Sauna'
+        return "Sauna"
 
     @property
     def device_info(self):
         return {
             "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, '4322')},
-            "identifiers": {(DOMAIN, '4321')},
+            "connections": {(DOMAIN, "4322")},
+            "identifiers": {(DOMAIN, "4321")},
             "manufacturer": MANUFACTURER,
-            "model": 'Pro {}'.format(self._api.type),
-            "name": 'Sauna controller',
+            "model": "Pro {}".format(self._api.type),
+            "name": "Sauna controller",
             "sw_version": self._api.sw_version,
         }
 
