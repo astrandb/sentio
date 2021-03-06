@@ -1,13 +1,16 @@
 import logging
-from collections import OrderedDict
 
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.const import STATE_OFF, STATE_ON
+
+# from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
+
+# from collections import OrderedDict
+
 
 _LOGGER = logging.getLogger(__name__)
 

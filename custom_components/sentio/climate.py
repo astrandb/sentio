@@ -11,7 +11,7 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_OFF,
     SUPPORT_TARGET_TEMPERATURE,
 )
-from homeassistant.const import ATTR_TEMPERATURE, STATE_OFF, STATE_ON, TEMP_CELSIUS
+from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON

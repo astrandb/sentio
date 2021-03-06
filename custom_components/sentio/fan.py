@@ -2,10 +2,12 @@ import logging
 from collections import OrderedDict
 
 from homeassistant.components.fan import SUPPORT_SET_SPEED, FanEntity
-from homeassistant.const import STATE_OFF, STATE_ON
+
+# from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import Entity
+
+# from homeassistant.helpers.entity import Entity
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from .const import DOMAIN, FAN_DISABLED, MANUFACTURER, SIGNAL_UPDATE_SENTIO

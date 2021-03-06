@@ -8,5 +8,6 @@
   ],
   "codeowners": [
     "@astrandb"
-  ]
+  ],
+  "version": "0.0.7"
 }

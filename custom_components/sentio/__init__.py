@@ -3,7 +3,7 @@ import asyncio
 import logging
 from datetime import timedelta
 
-import voluptuous as vol
+# import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
@@ -11,7 +11,7 @@ from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.event import async_track_time_interval
 from pysentio import SentioPro
 
-from .const import BAUD_RATE, DOMAIN, SERIAL_PORT, SIGNAL_UPDATE_SENTIO, VERSION
+from .const import BAUD_RATE, DOMAIN, SERIAL_PORT, SIGNAL_UPDATE_SENTIO
 
 # CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 

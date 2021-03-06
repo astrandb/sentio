@@ -1,19 +1,18 @@
 """Light component for Sentio sauna controller"""
 
 import logging
-from collections import OrderedDict
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    SUPPORT_BRIGHTNESS,
-    LightEntity,
-)
-from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.components.light import SUPPORT_BRIGHTNESS, LightEntity
+
+# from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
+
+# from collections import OrderedDict
+
 
 _LOGGER = logging.getLogger(__name__)
 
