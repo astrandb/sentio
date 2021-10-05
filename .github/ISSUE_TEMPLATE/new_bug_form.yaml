@@ -23,7 +23,7 @@ body:
       value: |
         ## Environment
   - type: input
-    id: version
+    id: version_easee
     validations:
       required: true
     attributes:
