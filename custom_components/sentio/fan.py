@@ -1,5 +1,4 @@
 import logging
-from collections import OrderedDict
 
 from homeassistant.components.fan import SUPPORT_SET_SPEED, FanEntity
 
@@ -92,14 +91,8 @@ class SaunaFan(FanEntity):
         self.async_schedule_update_ha_state(True)
 
     @property
-    def speed(self):
-        return str(int(100 * 2.55))
-
-    @property
-    def speed_list(self):
-        data = OrderedDict()
-        data = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"]
-        return data
+    def percentage(self):
+        return 0 if self._api.fan else 100
 
     async def async_update(self):
         return
