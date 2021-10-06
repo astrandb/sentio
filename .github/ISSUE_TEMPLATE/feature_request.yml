@@ -1,5 +1,5 @@
 name: Feature request
-description: request a new feature or enhancement.
+description: Request a new feature or enhancement.
 labels: enhancement
 body:
   - type: markdown
