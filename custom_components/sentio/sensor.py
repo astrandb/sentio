@@ -2,6 +2,7 @@
 import logging
 import re
 
+from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT, SensorEntity
 from homeassistant.const import (
     CONF_DEVICE_CLASS,
     CONF_NAME,
@@ -12,7 +13,6 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import Entity
 
 from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
 
@@ -48,15 +48,6 @@ SENSOR_TYPES = {
 }
 
 
-# def setup_platform(hass, config, add_entities, discovery_info=None):
-#     """Set up the sensor platform."""
-#     # We only want this platform to be set up via discovery.
-#     # if discovery_info is None:
-#     #     return
-#     # add_entities([BenchSensor(hass), HeaterSensor(hass)])
-#     return
-
-
 async def async_setup_entry(hass, entry, async_add_entities):
     def get_entities():
         api = hass.data[DOMAIN][entry.entry_id]
@@ -70,7 +61,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(await hass.async_add_job(get_entities), True)
 
 
-class BenchSensor(Entity):
+class BenchSensor(SensorEntity):
     """Representation of a sensor."""
 
     def __init__(self, hass, entry):
@@ -127,6 +118,10 @@ class BenchSensor(Entity):
         return DEVICE_CLASS_TEMPERATURE
 
     @property
+    def state_class(self):
+        return STATE_CLASS_MEASUREMENT
+
+    @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
         return TEMP_CELSIUS
@@ -136,7 +131,7 @@ class BenchSensor(Entity):
         return
 
 
-class HeaterSensor(Entity):
+class HeaterSensor(SensorEntity):
     """Representation of a sensor."""
 
     def __init__(self, hass, entry):
@@ -194,6 +189,10 @@ class HeaterSensor(Entity):
         return DEVICE_CLASS_TEMPERATURE
 
     @property
+    def state_class(self):
+        return STATE_CLASS_MEASUREMENT
+
+    @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
         return TEMP_CELSIUS
@@ -203,7 +202,7 @@ class HeaterSensor(Entity):
         return
 
 
-class HumiditySensor(Entity):
+class HumiditySensor(SensorEntity):
     """Representation of a sensor."""
 
     def __init__(self, hass, entry):
@@ -256,6 +255,10 @@ class HumiditySensor(Entity):
     @property
     def device_class(self):
         return DEVICE_CLASS_HUMIDITY
+
+    @property
+    def state_class(self):
+        return STATE_CLASS_MEASUREMENT
 
     @property
     def unit_of_measurement(self):
