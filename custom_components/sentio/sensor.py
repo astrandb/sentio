@@ -109,7 +109,7 @@ class BenchSensor(SensorEntity):
         return False
 
     @property
-    def state(self):
+    def native_value(self):
         """Return the state of the sensor."""
         return self._api.bench_temperature
 
@@ -122,7 +122,7 @@ class BenchSensor(SensorEntity):
         return STATE_CLASS_MEASUREMENT
 
     @property
-    def unit_of_measurement(self):
+    def native_unit_of_measurement(self):
         """Return the unit of measurement."""
         return TEMP_CELSIUS
 
@@ -179,7 +179,7 @@ class HeaterSensor(SensorEntity):
         return False
 
     @property
-    def state(self):
+    def native_value(self):
         """Return the state of the sensor."""
         # self._state = self._api.heater_temp
         return self._api.heater_temperature
@@ -193,7 +193,7 @@ class HeaterSensor(SensorEntity):
         return STATE_CLASS_MEASUREMENT
 
     @property
-    def unit_of_measurement(self):
+    def native_unit_of_measurement(self):
         """Return the unit of measurement."""
         return TEMP_CELSIUS
 
@@ -248,7 +248,7 @@ class HumiditySensor(SensorEntity):
         return False
 
     @property
-    def state(self):
+    def native_value(self):
         """Return the state of the sensor."""
         return self._api.humidity
 
@@ -261,7 +261,7 @@ class HumiditySensor(SensorEntity):
         return STATE_CLASS_MEASUREMENT
 
     @property
-    def unit_of_measurement(self):
+    def native_unit_of_measurement(self):
         """Return the unit of measurement."""
         return "%"
 
