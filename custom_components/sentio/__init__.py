@@ -46,6 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     _api.get_config()
     _LOGGER.info("SW_version: %s", _api.sw_version)
     device_info = DeviceInfo(
+        config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, "4321")},
         manufacturer="Sentiotec",
         model="Pro D2",
