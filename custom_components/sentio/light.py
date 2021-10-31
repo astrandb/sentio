@@ -7,9 +7,10 @@ from homeassistant.components.light import SUPPORT_BRIGHTNESS, LightEntity
 # from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity import DeviceInfo
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
-from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
+from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
 
 # from collections import OrderedDict
 
@@ -35,15 +36,9 @@ class SaunaLight(LightEntity):
 
     @property
     def device_info(self):
-        return {
-            "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, "4322")},
-            "identifiers": {(DOMAIN, "4321")},
-            "manufacturer": MANUFACTURER,
-            "model": "Pro {}".format(self._api.type),
-            "name": "Sauna controller",
-            "sw_version": self._api.sw_version,
-        }
+        return DeviceInfo(
+            identifiers={(DOMAIN, "4321")},
+        )
 
     @property
     def should_poll(self):
