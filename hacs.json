@@ -2,5 +2,7 @@
 "name": "Sentio",
 "render_readme": true,
 "domains": ["climate", "fan", "light", "sensor", "switch"],
-"iot_class": "Local Polling"
+"iot_class": "Local Polling",
+"zip_release": true,
+"filename": "sentio.zip"
 }
