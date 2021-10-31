@@ -8,6 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.dispatcher import dispatcher_send
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
 from pysentio import SentioPro
 
@@ -44,16 +45,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     _api = hass.data[DOMAIN][entry.entry_id]
     _api.get_config()
     _LOGGER.info("SW_version: %s", _api.sw_version)
-    device_registry = await dr.async_get_registry(hass)
-    device_registry.async_get_or_create(
-        config_entry_id=entry.entry_id,
-        connections={(DOMAIN, "4322")},
+    device_info = DeviceInfo(
         identifiers={(DOMAIN, "4321")},
-        manufacturer="Sentiotec a",
-        model="Pro D2 a",
-        name="Sauna controller a",
-        sw_version=_api.sw_version + " a",
+        manufacturer="Sentiotec",
+        model="Pro D2",
+        name="Sauna controller",
+        sw_version=_api.sw_version,
     )
+    device_registry = await dr.async_get_registry(hass)
+    device_registry.async_get_or_create(**device_info)
 
     """Get initial states and data from API"""
     _api.update()

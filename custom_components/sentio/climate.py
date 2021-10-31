@@ -14,15 +14,10 @@ from homeassistant.components.climate.const import (
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
+from homeassistant.helpers.entity import DeviceInfo
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
-from .const import (
-    DOMAIN,
-    MANUFACTURER,
-    MAX_SET_TEMP,
-    MIN_SET_TEMP,
-    SIGNAL_UPDATE_SENTIO,
-)
+from .const import DOMAIN, MAX_SET_TEMP, MIN_SET_TEMP, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -60,15 +55,9 @@ class SaunaClimate(ClimateEntity):
 
     @property
     def device_info(self):
-        return {
-            "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, "4322")},
-            "identifiers": {(DOMAIN, "4321")},
-            "manufacturer": MANUFACTURER,
-            "model": "Pro {}".format(self._api.type),
-            "name": "Sauna controller",
-            "sw_version": self._api.sw_version,
-        }
+        return DeviceInfo(
+            identifiers={(DOMAIN, "4321")},
+        )
 
     @property
     def should_poll(self):

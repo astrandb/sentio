@@ -13,8 +13,9 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity import DeviceInfo
 
-from .const import DOMAIN, MANUFACTURER, SIGNAL_UPDATE_SENTIO
+from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -94,15 +95,9 @@ class BenchSensor(SensorEntity):
 
     @property
     def device_info(self):
-        return {
-            "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, "4322")},
-            "identifiers": {(DOMAIN, "4321")},
-            "manufacturer": MANUFACTURER,
-            "model": "Pro {}".format(self._api.type),
-            "name": "Sauna controller",
-            "sw_version": self._api.sw_version,
-        }
+        return DeviceInfo(
+            identifiers={(DOMAIN, "4321")},
+        )
 
     @property
     def should_poll(self):
@@ -164,15 +159,9 @@ class HeaterSensor(SensorEntity):
 
     @property
     def device_info(self):
-        return {
-            "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, "4322")},
-            "identifiers": {(DOMAIN, "4321")},
-            "manufacturer": MANUFACTURER,
-            "model": "Pro {}".format(self._api.type),
-            "name": "Sauna controller",
-            "sw_version": self._api.sw_version,
-        }
+        return DeviceInfo(
+            identifiers={(DOMAIN, "4321")},
+        )
 
     @property
     def should_poll(self):
@@ -233,15 +222,9 @@ class HumiditySensor(SensorEntity):
 
     @property
     def device_info(self):
-        return {
-            "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, "4322")},
-            "identifiers": {(DOMAIN, "4321")},
-            "manufacturer": MANUFACTURER,
-            "model": "Pro {}".format(self._api.type),
-            "name": "Sauna controller",
-            "sw_version": self._api.sw_version,
-        }
+        return DeviceInfo(
+            identifiers={(DOMAIN, "4321")},
+        )
 
     @property
     def should_poll(self):

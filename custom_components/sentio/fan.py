@@ -5,11 +5,12 @@ from homeassistant.components.fan import SUPPORT_SET_SPEED, FanEntity
 # from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity import DeviceInfo
 
 # from homeassistant.helpers.entity import Entity
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
-from .const import DOMAIN, FAN_DISABLED, MANUFACTURER, SIGNAL_UPDATE_SENTIO
+from .const import DOMAIN, FAN_DISABLED, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,15 +36,9 @@ class SaunaFan(FanEntity):
 
     @property
     def device_info(self):
-        return {
-            "config_entry_id": self._entryid,
-            "connections": {(DOMAIN, "4322")},
-            "identifiers": {(DOMAIN, "4321")},
-            "manufacturer": MANUFACTURER,
-            "model": "Pro {}".format(self._api.type),
-            "name": "Sauna controller",
-            "sw_version": self._api.sw_version,
-        }
+        return DeviceInfo(
+            identifiers={(DOMAIN, "4321")},
+        )
 
     @property
     def should_poll(self):
