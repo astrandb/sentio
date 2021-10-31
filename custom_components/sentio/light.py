@@ -36,7 +36,6 @@ class SaunaLight(LightEntity):
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
         self._attr_should_poll = False
         self._attr_name = "Sauna Light"
-        self._attr_is_on = self._api.light_is_on
         self._attr_brightness = int(50 * 2.55)
 
     async def async_added_to_hass(self):
@@ -48,6 +47,10 @@ class SaunaLight(LightEntity):
         """Call update method."""
         _LOGGER.debug(self.name + " update_callback state: %s", self._api.light_is_on)
         self.async_schedule_update_ha_state(True)
+
+    @property
+    def is_on(self):
+        return self._api.light_is_on
 
     @property
     def supported_features(self):
