@@ -3,3 +3,6 @@ bump2version
 flake8
 isort
 colorlog
+
+pysentio
+homeassistant
