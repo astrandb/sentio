@@ -1,8 +1,7 @@
 {
 "name": "Sentio",
 "render_readme": true,
-"domains": ["climate", "fan", "light", "sensor", "switch"],
-"iot_class": "Local Polling",
+"homeassistant": "2022.6.0",
 "zip_release": true,
 "filename": "sentio.zip"
 }

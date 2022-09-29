@@ -53,7 +53,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         name="Sauna controller",
         sw_version=_api.sw_version,
     )
-    device_registry = await dr.async_get_registry(hass)
+    device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(**device_info)
 
     """Get initial states and data from API"""
