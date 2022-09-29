@@ -50,7 +50,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         identifiers={(DOMAIN, "4321")},
         manufacturer="Sentiotec",
         model="Pro D2",
-        name="Sauna controller",
+        name="Sauna",
         sw_version=_api.sw_version,
     )
     device_registry = dr.async_get(hass)

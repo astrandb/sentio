@@ -34,12 +34,13 @@ class SaunaOn(SwitchEntity):
     def __init__(self, hass, entry):
         """Initialize the sensor."""
         self._entryid = entry.entry_id
-        self._unique_id = DOMAIN + "_" + "sauna_on"
+        self._attr_unique_id = "sauna_switch"
+        self._attr_has_entity_name = True
+        self._attr_should_poll = False
+        self._attr_name = "Heater"
+        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
+        self._attr_icon = "mdi:radiator"
         self._api = hass.data[DOMAIN][entry.entry_id]
-
-    @property
-    def should_poll(self):
-        return False
 
     async def async_added_to_hass(self):
         """Register callbacks."""
@@ -50,26 +51,6 @@ class SaunaOn(SwitchEntity):
         """Call update method."""
         _LOGGER.debug(self.name + " update_callback state: %s", self._api.is_on)
         self.async_schedule_update_ha_state(True)
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Sauna"
-
-    @property
-    def device_info(self):
-        return DeviceInfo(
-            identifiers={(DOMAIN, "4321")},
-        )
-
-    @property
-    def unique_id(self):
-        """Return the ID of this device."""
-        return self._unique_id
-
-    @property
-    def icon(self):
-        return "mdi:radiator"
 
     @property
     def is_on(self):

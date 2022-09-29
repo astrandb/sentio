@@ -33,8 +33,19 @@ class SaunaClimate(ClimateEntity):
     def __init__(self, hass, entry):
         """Initialize the device."""
         self._entryid = entry.entry_id
-        self._unique_id = DOMAIN + "_" + "climate"
         self._api = hass.data[DOMAIN][entry.entry_id]
+        self._attr_unique_id = "sauna_climate"
+        self._attr_has_entity_name = True
+        self._attr_should_poll = False
+        self._attr_name = None
+        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
+
+        self._attr_temperature_unit = TEMP_CELSIUS
+        self._attr_min_temp = MIN_SET_TEMP
+        self._attr_precision = 1.0
+        self._attr_hvac_modes = [HVAC_MODE_OFF, HVAC_MODE_HEAT]
+        self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE
+        self._attr_target_temperature_step = 1.0
 
     async def async_added_to_hass(self):
         """Register callbacks."""
@@ -49,40 +60,8 @@ class SaunaClimate(ClimateEntity):
         self.async_schedule_update_ha_state(True)
 
     @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Sauna"
-
-    @property
-    def device_info(self):
-        return DeviceInfo(
-            identifiers={(DOMAIN, "4321")},
-        )
-
-    @property
-    def should_poll(self):
-        return False
-
-    @property
-    def unique_id(self):
-        """Return the ID of this device."""
-        return self._unique_id
-
-    @property
-    def temperature_unit(self):
-        return TEMP_CELSIUS
-
-    @property
-    def min_temp(self):
-        return MIN_SET_TEMP
-
-    @property
     def max_temp(self):
         return min(MAX_SET_TEMP, int(self._api.config("max preset temp")))
-
-    @property
-    def precision(self):
-        return 1.0
 
     @property
     def hvac_mode(self):
@@ -103,18 +82,6 @@ class SaunaClimate(ClimateEntity):
     @property
     def target_temperature(self):
         return self._api.target_temperature
-
-    @property
-    def target_temperature_step(self):
-        return 1.0
-
-    @property
-    def hvac_modes(self):
-        return [HVAC_MODE_OFF, HVAC_MODE_HEAT]
-
-    @property
-    def supported_features(self):
-        return SUPPORT_TARGET_TEMPERATURE
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
