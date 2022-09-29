@@ -40,6 +40,7 @@ class BenchSensor(SensorEntity):
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
         self._attr_should_poll = False
         self._attr_unique_id = "sauna_bench_sensor"
+        self._attr_has_entity_name = True
         self._attr_name = "Bench"
         self._attr_device_class = SensorDeviceClass.TEMPERATURE
         self._attr_state_class = SensorStateClass.MEASUREMENT
@@ -77,6 +78,7 @@ class HeaterSensor(SensorEntity):
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
         self._attr_should_poll = False
         self._attr_unique_id = "sauna_heater_sensor"
+        self._attr_has_entity_name = True
         self._attr_name = "Heater"
         self._attr_device_class = SensorDeviceClass.TEMPERATURE
         self._attr_state_class = SensorStateClass.MEASUREMENT
@@ -115,6 +117,7 @@ class HumiditySensor(SensorEntity):
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
         self._attr_should_poll = False
         self._attr_unique_id = "sauna_humidity_sensor"
+        self._attr_has_entity_name = True
         self._attr_name = "Humidity"
         self._attr_device_class = SensorDeviceClass.HUMIDITY
         self._attr_state_class = SensorStateClass.MEASUREMENT

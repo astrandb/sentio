@@ -55,7 +55,7 @@ class SaunaClimate(ClimateEntity):
     def _update_callback(self):
         """Call update method."""
         _LOGGER.debug(
-            self.name + " climate update_callback state: %s", self._api.hvac_mode
+            "Sauna" + " climate update_callback state: %s", self._api.hvac_mode
         )
         self.async_schedule_update_ha_state(True)
 
@@ -85,7 +85,7 @@ class SaunaClimate(ClimateEntity):
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
-        _LOGGER.debug(self.name + " hvac_mode = %s", hvac_mode)
+        _LOGGER.debug("Sauna" + " hvac_mode = %s", hvac_mode)
         if hvac_mode == HVAC_MODE_HEAT:
             self._api.set_sauna(PYS_STATE_ON)
         else:
@@ -97,9 +97,9 @@ class SaunaClimate(ClimateEntity):
         """Set new target temperature."""
         temp = kwargs.get(ATTR_TEMPERATURE)
         self._api.set_sauna_val(int(temp))
-        _LOGGER.debug(self.name + " New target temp => %s", temp)
+        _LOGGER.debug("Sauna" + " New target temp => %s", temp)
         return
 
     async def async_update(self):
-        _LOGGER.debug(self.name + "climate async_update 1 %s", self._api.hvac_mode)
+        _LOGGER.debug("Sauna" + "climate async_update 1 %s", self._api.hvac_mode)
         return
