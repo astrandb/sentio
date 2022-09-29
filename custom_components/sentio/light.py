@@ -32,10 +32,11 @@ class SaunaLight(LightEntity):
         """Initialize the light entity."""
         self._entryid = entry.entry_id
         self._api = hass.data[DOMAIN][entry.entry_id]
-        self._attr_unique_id = DOMAIN + "_" + "saunalight"
+        self._attr_unique_id = "sauna_light"
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
         self._attr_should_poll = False
-        self._attr_name = "Sauna Light"
+        self._attr_name = "Light"
+        self._attr_has_entity_name = True
         self._attr_brightness = int(50 * 2.55)
 
     async def async_added_to_hass(self):

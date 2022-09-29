@@ -32,17 +32,11 @@ class SaunaFan(FanEntity):
         """Initialize the sensor."""
         self._entryid = entry.entry_id
         self._api = hass.data[DOMAIN][entry.entry_id]
-        self._unique_id = DOMAIN + "_" + "saunafan"
-
-    @property
-    def device_info(self):
-        return DeviceInfo(
-            identifiers={(DOMAIN, "4321")},
-        )
-
-    @property
-    def should_poll(self):
-        return False
+        self._attr_unique_id = "sauna_fan"
+        self._attr_has_entity_name = True
+        self._attr_should_poll = False
+        self._attr_name = "Fan"
+        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
 
     async def async_added_to_hass(self):
         """Register callbacks."""
@@ -53,16 +47,6 @@ class SaunaFan(FanEntity):
         """Call update method."""
         _LOGGER.debug(self.name + " update_callback state: %s", self._api.fan)
         self.async_schedule_update_ha_state(True)
-
-    @property
-    def name(self):
-        """Return the name of the fan."""
-        return "Sauna Fan"
-
-    @property
-    def unique_id(self):
-        """Return the ID of this device."""
-        return self._unique_id
 
     @property
     def supported_features(self):
