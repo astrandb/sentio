@@ -61,7 +61,9 @@ class SaunaClimate(ClimateEntity):
 
     @property
     def max_temp(self):
-        return min(MAX_SET_TEMP, int(self._api.config("max preset temp")))
+        if (maxtemp := self._api.config("max preset temp")) is None:
+            return MAX_SET_TEMP
+        return min(MAX_SET_TEMP, int(maxtemp))
 
     @property
     def hvac_mode(self):
@@ -90,7 +92,7 @@ class SaunaClimate(ClimateEntity):
             self._api.set_sauna(PYS_STATE_ON)
         else:
             self._api.set_sauna(PYS_STATE_OFF)
-        self.async_update_ha_state(True)
+        await self.async_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_set_temperature(self, **kwargs):
