@@ -7,7 +7,7 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import PERCENTAGE, UnitOfTemperature
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo
@@ -23,7 +23,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
         sensors = [HeaterSensor(hass, entry)]
         if api.config("sens bench") == "on":
             sensors.append(BenchSensor(hass, entry))
-        if re.match("D3", api.type):
+        if re.match("C3|D3", api.type):
             sensors.append(HumiditySensor(hass, entry))
         return sensors
 
@@ -44,7 +44,7 @@ class BenchSensor(SensorEntity):
         self._attr_name = "Bench"
         self._attr_device_class = SensorDeviceClass.TEMPERATURE
         self._attr_state_class = SensorStateClass.MEASUREMENT
-        self._attr_native_unit_of_measurement = TEMP_CELSIUS
+        self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     async def async_added_to_hass(self):
         """Register callbacks."""
@@ -82,7 +82,7 @@ class HeaterSensor(SensorEntity):
         self._attr_name = "Heater"
         self._attr_device_class = SensorDeviceClass.TEMPERATURE
         self._attr_state_class = SensorStateClass.MEASUREMENT
-        self._attr_native_unit_of_measurement = TEMP_CELSIUS
+        self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     async def async_added_to_hass(self):
         """Register callbacks."""
@@ -121,6 +121,7 @@ class HumiditySensor(SensorEntity):
         self._attr_name = "Humidity"
         self._attr_device_class = SensorDeviceClass.HUMIDITY
         self._attr_state_class = SensorStateClass.MEASUREMENT
+        self._attr_native_unit_of_measurement = PERCENTAGE
 
     async def async_added_to_hass(self):
         """Register callbacks."""
