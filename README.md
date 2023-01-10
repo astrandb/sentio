@@ -6,7 +6,8 @@ Custom component for Sentiotec sauna controller for integration in  Home Assista
 ## Preparation
 In order to connect the Sentio Pro sauna controller you need a serial port with RS-485 interface on the server running Home Assistant. On Linux based machines the serial port is typically called /dev/ttyUSB0.
 
-The user running Homeassistant should be added to group dialout.
+The user running Homeassistant should be added to group dialout - not needed if user is root.
+
 ## Installation
 ### Install with HACS (Recommended)
 Add this repository as a custom repo in HACS settings.
