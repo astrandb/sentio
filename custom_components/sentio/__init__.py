@@ -12,7 +12,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
 from pysentio import SentioPro
 
-from .const import BAUD_RATE, DOMAIN, SERIAL_PORT, SIGNAL_UPDATE_SENTIO
+from .const import BAUD_RATE, DOMAIN, MANUFACTURER, SERIAL_PORT, SIGNAL_UPDATE_SENTIO
 
 # CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -48,7 +48,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     device_info = DeviceInfo(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, "4321")},
-        manufacturer="Sentiotec",
+        manufacturer=MANUFACTURER,
         model=f"Pro {_api.type}",
         name="Sauna",
         sw_version=_api.sw_version,
