@@ -1,6 +1,5 @@
 {
   "config": {
-    "title": "Sentio sauna controller",
     "step": {
       "user": {
         "title": "Connect to the device",
