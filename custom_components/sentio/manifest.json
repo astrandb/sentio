@@ -3,8 +3,9 @@
   "name": "Sentio sauna",
   "config_flow": true,
   "documentation": "https://github.com/astrandb/sentio",
+  "issue_tracker": "https://github.com/astrandb/sentio/issues",
   "requirements": [
-    "pysentio==0.0.50"
+    "pysentio==0.0.51"
   ],
   "codeowners": [
     "@astrandb"
