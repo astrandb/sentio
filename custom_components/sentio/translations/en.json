@@ -12,12 +12,11 @@
             "user": {
                 "data": {
                     "serial_port": "Serial port",
-                    "disable_fan" : "Disable fan"
+                    "disable_fan": "Disable fan"
                 },
                 "title": "Connect to the device",
-                "description" : "Enter the serial (RS485) port that connects to the Sentio controller."
+                "description": "Enter the serial (RS485) port that connects to the Sentio controller."
             }
-        },
-        "title": "Sentio sauna controller"
+        }
     }
 }

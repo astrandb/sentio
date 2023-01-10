@@ -17,7 +17,6 @@
                 "title": "Anslut till enheten",
                 "description": "Ange serieporten (RS485) som ansluter Sentio styrenhet."
             }
-        },
-        "title": "Sentio sauna styrenhet"
+        }
     }
 }
