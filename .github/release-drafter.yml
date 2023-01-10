@@ -21,7 +21,9 @@ change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 
 template: |
-  ## Changes
+  [![Downloads for this release](https://img.shields.io/github/downloads/astrandb/sentio/v$RESOLVED_VERSION/total.svg)](https://github.com/astrandb/sentio/releases/v$RESOLVED_VERSION)
+
+  ## Notable changes
 
   $CHANGES
   
