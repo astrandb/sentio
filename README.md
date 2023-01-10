@@ -14,11 +14,15 @@ Add this repository as a custom repo in HACS settings.
 
 Search for Sentio integration and install it directly from HACS. HACS will keep track of updates and you can easily upgrade to latest version.
 
+Restart Home Assistant
+
 HACS can be found [here](https://hacs.xyz/)
 ### Install manually
 If you want to install manually, you probably already know how to proceed.
 ## Configuration
 Goto Configuration->Integrations and press (+ Add integration)
+
+Search for Sentio
 
 Enter the port to use. On Linux typically /dev/ttyUSB0 .
 
