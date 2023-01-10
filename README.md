@@ -18,8 +18,11 @@ HACS can be found [here](https://hacs.xyz/)
 ### Install manually
 If you want to install manually, you probably already know how to proceed.
 ## Configuration
-Goto Configuration->Integrations and press (+)
+Goto Configuration->Integrations and press (+ Add integration)
+
 Enter the port to use. On Linux typically /dev/ttyUSB0 .
+
 Relevant entities will be created in HA depending on what the connected controller model supports
+
 ## Links
 [Documentation](https://github.com/astrandb/sentio/wiki)
