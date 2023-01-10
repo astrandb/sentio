@@ -11,7 +11,7 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_OFF,
     SUPPORT_TARGET_TEMPERATURE,
 )
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
+from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
@@ -40,7 +40,7 @@ class SaunaClimate(ClimateEntity):
         self._attr_name = None
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
 
-        self._attr_temperature_unit = TEMP_CELSIUS
+        self._attr_temperature_unit = UnitOfTemperature.CELSIUS
         self._attr_min_temp = MIN_SET_TEMP
         self._attr_precision = 1.0
         self._attr_hvac_modes = [HVAC_MODE_OFF, HVAC_MODE_HEAT]
