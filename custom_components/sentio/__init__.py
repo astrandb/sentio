@@ -5,6 +5,7 @@ from datetime import timedelta
 
 # import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.dispatcher import dispatcher_send
@@ -16,7 +17,13 @@ from .const import BAUD_RATE, DOMAIN, MANUFACTURER, SERIAL_PORT, SIGNAL_UPDATE_S
 
 # CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
-PLATFORMS = ["light", "sensor", "switch", "fan", "climate"]
+PLATFORMS = [
+    Platform.LIGHT,
+    Platform.SENSOR,
+    Platform.SWITCH,
+    Platform.FAN,
+    Platform.CLIMATE,
+]
 
 SCAN_INTERVAL = timedelta(seconds=60)
 
@@ -37,11 +44,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.debug("Calling dispatcher_send")
         dispatcher_send(hass, SIGNAL_UPDATE_SENTIO)
 
-    # TODO Store an API object for your platforms to access
     hass.data[DOMAIN] = {}
     hass.data[DOMAIN][entry.entry_id] = SentioPro(
         entry.data.get(SERIAL_PORT), BAUD_RATE
-    )  # MyApi(...)
+    )
     _api = hass.data[DOMAIN][entry.entry_id]
     _api.get_config()
     _LOGGER.info("SW_version: %s, Type: %s", _api.sw_version, _api.type)
@@ -56,7 +62,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(**device_info)
 
-    """Get initial states and data from API"""
+    # Get initial states and data from API
     _api.update()
 
     for component in PLATFORMS:
