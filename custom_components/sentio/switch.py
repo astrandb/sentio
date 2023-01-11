@@ -1,8 +1,8 @@
+"""Switch module for Sentio integration."""
 import logging
 
 from homeassistant.components.switch import SwitchEntity
 
-# from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
@@ -10,18 +10,12 @@ from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
 
-# from collections import OrderedDict
-
-
 _LOGGER = logging.getLogger(__name__)
 
 
-def setup_platform(hass, config, add_entities, discovery_info=None):
-    """Set up the sensor platform."""
-    return
-
-
 async def async_setup_entry(hass, entry, async_add_entities):
+    """Setup the switches."""
+
     def get_entities():
         return [SaunaOn(hass, entry)]
 
@@ -49,7 +43,7 @@ class SaunaOn(SwitchEntity):
     @callback
     def _update_callback(self):
         """Call update method."""
-        _LOGGER.debug(self.name + " update_callback state: %s", self._api.is_on)
+        _LOGGER.debug("%s update_callback state: %s", self.name, self._api.is_on)
         self.async_schedule_update_ha_state(True)
 
     @property
@@ -57,16 +51,17 @@ class SaunaOn(SwitchEntity):
         return self._api.is_on
 
     async def async_turn_on(self, **kwargs):
-        _LOGGER.debug(self.name + " Turn_on")
+        _LOGGER.debug("%s Turn_on", self.name)
         self._api.set_sauna(PYS_STATE_ON)
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_turn_off(self, **kwargs):
-        _LOGGER.debug(self.name + " Turn_off")
+        _LOGGER.debug("%s Turn_off", self.name)
         self._api.set_sauna(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_update(self):
-        _LOGGER.debug(self.name + " Switch async_update 1 %s", self._api.is_on)
+        """Update."""
+        _LOGGER.debug("%s Switch async_update 1 %s", self.name, self._api.is_on)
