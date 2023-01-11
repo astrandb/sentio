@@ -1,4 +1,6 @@
+"""Fan entity."""
 import logging
+from typing import Any
 
 from homeassistant.components.fan import SUPPORT_SET_SPEED, FanEntity
 
@@ -16,11 +18,13 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
+    """Setup entry."""
+
     def get_fans():
-        sensors = []
+        entities = []
         if not entry.data.get(FAN_DISABLED):
-            sensors.append(SaunaFan(hass, entry))
-        return sensors
+            entities.append(SaunaFan(hass, entry))
+        return entities
 
     async_add_entities(await hass.async_add_job(get_fans), True)
 
@@ -45,7 +49,7 @@ class SaunaFan(FanEntity):
     @callback
     def _update_callback(self):
         """Call update method."""
-        _LOGGER.debug(self.name + " update_callback state: %s", self._api.fan)
+        _LOGGER.debug("%s update_callback state: %s", self.name, self._api.fan)
         self.async_schedule_update_ha_state(True)
 
     @property
@@ -59,19 +63,32 @@ class SaunaFan(FanEntity):
     def is_on(self):
         return self._api.fan
 
-    async def async_turn_on(self, **kwargs):
-        _LOGGER.debug(self.name + " Turn_on")
+    async def async_set_percentage(self, percentage: int) -> None:
+        """Set the speed of the fan, as a percentage."""
+        _LOGGER.debug("%s Set percentage: %s", self.name, percentage)
+        self._api.set_fan_val(percentage)
+        self.async_schedule_update_ha_state(True)
+
+    async def async_turn_on(
+        self,
+        percentage: int | None = None,
+        preset_mode: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """Turn on the fan."""
+        _LOGGER.debug("%s Turn_on; percentage: %s", self.name, percentage)
         self._api.set_fan(PYS_STATE_ON)
         self.async_schedule_update_ha_state(True)
 
     async def async_turn_off(self, **kwargs):
-        _LOGGER.debug(self.name + " Turn_off")
+        _LOGGER.debug("%s Turn_off", self.name)
         self._api.set_fan(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)
 
     @property
     def percentage(self):
-        return 0 if self._api.fan else 100
+        return self._api.fan_val
 
     async def async_update(self):
+        """Update fan."""
         return
