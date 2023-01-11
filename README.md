@@ -1,5 +1,5 @@
-# Sentio - Work in progress
-[![Sentio](https://img.shields.io/github/v/release/astrandb/sentio)](https://github.com/astrandb/sentio/releases/latest) [![hacs_badge](https://img.shields.io/badge/HACS-Custom-blue.svg)](https://github.com/custom-components/hacs) [![stability-wip](https://img.shields.io/badge/stability-work_in_progress-blue.svg)](https://github.com/custom-components/hacs) [![Downloads for latest release](https://img.shields.io/github/downloads-pre/astrandb/sentio/latest/total.svg)](https://github.com/astrandb/sentio/releases/latest)
+# Sentio integration for Home Assistant
+[![Sentio](https://img.shields.io/github/v/release/astrandb/sentio)](https://github.com/astrandb/sentio/releases/latest) [![hacs_badge](https://img.shields.io/badge/HACS-Custom-blue.svg)](https://github.com/custom-components/hacs)  [![Downloads for latest release](https://img.shields.io/github/downloads-pre/astrandb/sentio/latest/total.svg)](https://github.com/astrandb/sentio/releases/latest)
 
 Custom component for Sentiotec sauna controller for integration in  Home Assistant
 
@@ -27,6 +27,10 @@ Search for Sentio
 Enter the port to use. On Linux typically /dev/ttyUSB0 .
 
 Relevant entities will be created in HA depending on what the connected controller model supports
+
+## Known limitations
+
+The representation is varying for different Sentio Pro models. The support is fairly complete for models C2, C3, D2 & D3. If you miss any features, please create an issue here.
 
 ## Links
 [Documentation](https://github.com/astrandb/sentio/wiki)
