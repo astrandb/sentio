@@ -2,7 +2,8 @@
 import logging
 
 import voluptuous as vol
-from homeassistant import config_entries, core, exceptions
+from homeassistant import config_entries, exceptions
+from homeassistant.core import HomeAssistant
 from pysentio import SentioPro
 
 from .const import (  # pylint:disable=unused-import
@@ -15,7 +16,6 @@ from .const import (  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO adjust the data schema to the data that you need
 DATA_SCHEMA = vol.Schema(
     {
         vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): str,
@@ -29,30 +29,25 @@ class SentioHub:
     TODO Remove this placeholder class and replace with things from your PyPI package.
     """
 
+    type = None
+
     def __init__(self, host):
         """Initialize."""
         self.host = host
 
     async def connect(self, serial_port) -> bool:
         """Test if we can authenticate with the host."""
-        ss = SentioPro(serial_port, BAUD_RATE)
-        ss.get_config()
-        self._type = ss.type
+        api = SentioPro(serial_port, BAUD_RATE)
+        api.get_config()
+        self.type = api.type
         return True
 
 
-async def validate_input(hass: core.HomeAssistant, data):
+async def validate_input(hass: HomeAssistant, data):
     """Validate the user input allows us to connect.
 
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
-    # TODO validate the data can be used to set up a connection.
-
-    # If your PyPI package is not built with async, pass your methods
-    # to the executor:
-    # await hass.async_add_executor_job(
-    #     your_validate_func, data["username"], data["password"]
-    # )
 
     hub = SentioHub(data[SERIAL_PORT])
 
@@ -65,14 +60,13 @@ async def validate_input(hass: core.HomeAssistant, data):
     # InvalidAuth
 
     # Return info that you want to store in the config entry.
-    return {"title": "Sentio Pro {}".format(hub._type)}
+    return {"title": f"Sentio Pro {hub.type}"}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for sentio sauna."""
 
     VERSION = 1
-    # TODO pick one of the available connection classes in homeassistant/config_entries.py
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
 
     async def async_step_user(self, user_input=None):
