@@ -24,132 +24,18 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     def get_entities():
         api = hass.data[DOMAIN][entry.entry_id]
-        sensors = [HeaterSensor(hass, entry)]
-        sensors.append(TimerSensor(hass, entry, timer_desc))
-        sensors.append(TimerSensor(hass, entry, heat_timer_desc))
+        sensors = [SentioSensor(hass, entry, heater_temp_desc)]
+        sensors.append(SentioSensor(hass, entry, timer_desc))
+        sensors.append(SentioSensor(hass, entry, heat_timer_desc))
         if api.config("sens bench") == "on":
-            sensors.append(BenchSensor(hass, entry))
+            sensors.append(SentioSensor(hass, entry, bench_temp_desc))
+        if api.config("sens foil") == "on":
+            sensors.append(SentioSensor(hass, entry, foil_temp_desc))
         if re.match("C3|D3", api.type):
-            sensors.append(HumiditySensor(hass, entry))
+            sensors.append(SentioSensor(hass, entry, humidity_desc))
         return sensors
 
     async_add_entities(await hass.async_add_job(get_entities), True)
-
-
-class BenchSensor(SensorEntity):
-    """Representation of a sensor."""
-
-    def __init__(self, hass, entry):
-        """Initialize the sensor."""
-        self._entryid = entry.entry_id
-        self._api = hass.data[DOMAIN][entry.entry_id]
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-        self._attr_should_poll = False
-        self._attr_unique_id = "sauna_bench_sensor"
-        self._attr_has_entity_name = True
-        self._attr_name = "Bench"
-        self._attr_device_class = SensorDeviceClass.TEMPERATURE
-        self._attr_state_class = SensorStateClass.MEASUREMENT
-        self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        _LOGGER.debug(
-            "%s update_callback state: %s", self.name, self._api.bench_temperature
-        )
-        self.async_schedule_update_ha_state(True)
-
-    @property
-    def native_value(self):
-        """Return the state of the sensor."""
-        return self._api.bench_temperature
-
-    async def async_update(self):
-        """Update the sensor entity."""
-        _LOGGER.debug("%s async_update 1 %s", self.name, self._api.bench_temperature)
-        return
-
-
-class HeaterSensor(SensorEntity):
-    """Representation of a sensor."""
-
-    def __init__(self, hass, entry):
-        """Initialize the sensor."""
-        self._entryid = entry.entry_id
-        self._api = hass.data[DOMAIN][entry.entry_id]
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-        self._attr_should_poll = False
-        self._attr_unique_id = "sauna_heater_sensor"
-        self._attr_has_entity_name = True
-        self._attr_name = "Heater"
-        self._attr_device_class = SensorDeviceClass.TEMPERATURE
-        self._attr_state_class = SensorStateClass.MEASUREMENT
-        self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        _LOGGER.debug(
-            "%s update_callback state: %s", self.name, self._api.heater_temperature
-        )
-        self.async_schedule_update_ha_state(True)
-
-    @property
-    def native_value(self):
-        """Return the state of the sensor."""
-        # self._state = self._api.heater_temp
-        return self._api.heater_temperature
-
-    async def async_update(self):
-        """Update the sensor entity."""
-        _LOGGER.debug("%s async_update 1 %s", self.name, self._api.heater_temperature)
-        return
-
-
-class HumiditySensor(SensorEntity):
-    """Representation of a sensor."""
-
-    def __init__(self, hass, entry):
-        """Initialize the sensor."""
-        self._entryid = entry.entry_id
-        self._api = hass.data[DOMAIN][entry.entry_id]
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-        self._attr_should_poll = False
-        self._attr_unique_id = "sauna_humidity_sensor"
-        self._attr_has_entity_name = True
-        self._attr_name = "Humidity"
-        self._attr_device_class = SensorDeviceClass.HUMIDITY
-        self._attr_state_class = SensorStateClass.MEASUREMENT
-        self._attr_native_unit_of_measurement = PERCENTAGE
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        _LOGGER.debug("%s update_callback state: %s", self.name, self._api.humidity)
-        self.async_schedule_update_ha_state(True)
-
-    @property
-    def native_value(self):
-        """Return the state of the sensor."""
-        return self._api.humidity
-
-    async def async_update(self):
-        """Update the sensor entity."""
-        _LOGGER.debug("%s async_update 1 %s", self.name, self._api.humidity)
-        return
 
 
 timer_desc = SensorEntityDescription(
@@ -170,9 +56,47 @@ heat_timer_desc = SensorEntityDescription(
     native_unit_of_measurement=UnitOfTime.MINUTES,
 )
 
+foil_temp_desc = SensorEntityDescription(
+    key="foil_temp",
+    device_class=SensorDeviceClass.TEMPERATURE,
+    has_entity_name=True,
+    name="Foil",
+    native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    state_class=SensorStateClass.MEASUREMENT,
+)
 
-class TimerSensor(SensorEntity):
-    """Class for Timer Sensors."""
+
+heater_temp_desc = SensorEntityDescription(
+    key="heater_temp",
+    device_class=SensorDeviceClass.TEMPERATURE,
+    has_entity_name=True,
+    name="Heater",
+    native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    state_class=SensorStateClass.MEASUREMENT,
+)
+
+
+bench_temp_desc = SensorEntityDescription(
+    key="bench_temp",
+    device_class=SensorDeviceClass.TEMPERATURE,
+    has_entity_name=True,
+    name="Bench",
+    native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+    state_class=SensorStateClass.MEASUREMENT,
+)
+
+humidity_desc = SensorEntityDescription(
+    key="humidity",
+    device_class=SensorDeviceClass.HUMIDITY,
+    has_entity_name=True,
+    name="Humidity",
+    native_unit_of_measurement=PERCENTAGE,
+    state_class=SensorStateClass.MEASUREMENT,
+)
+
+
+class SentioSensor(SensorEntity):
+    """Class for Sentio sensors."""
 
     entity_description: SensorEntityDescription
 
@@ -183,16 +107,25 @@ class TimerSensor(SensorEntity):
         description: SensorEntityDescription,
     ):
         self.entity_description = description
+        self._attr_should_poll = False
         self._api = hass.data[DOMAIN][entry.entry_id]
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-        self._attr_unique_id = self.entity_description.name
+        self._attr_unique_id = self.entity_description.key
 
     @property
     def native_value(self):
         if self.entity_description.key == "preset_timer":
             return self._api.timer_val
-        elif self.entity_description.key == "heater_timer":
+        if self.entity_description.key == "heater_timer":
             return self._api.heattimer_val
+        if self.entity_description.key == "foil_temp":
+            return self._api.foil_temperature
+        if self.entity_description.key == "bench_temp":
+            return self._api.bench_temperature
+        if self.entity_description.key == "heater_temp":
+            return self._api.heater_temperature
+        if self.entity_description.key == "humidity":
+            return self._api.humidity
         return None
 
     async def async_added_to_hass(self):
