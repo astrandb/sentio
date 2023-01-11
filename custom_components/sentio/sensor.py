@@ -5,12 +5,14 @@ import re
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
+    SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import PERCENTAGE, UnitOfTemperature
-from homeassistant.core import callback
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import PERCENTAGE, UnitOfTemperature, UnitOfTime
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 
 from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
 
@@ -18,9 +20,13 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
+    """Setup the sensor entities."""
+
     def get_entities():
         api = hass.data[DOMAIN][entry.entry_id]
         sensors = [HeaterSensor(hass, entry)]
+        sensors.append(TimerSensor(hass, entry, timer_desc))
+        sensors.append(TimerSensor(hass, entry, heat_timer_desc))
         if api.config("sens bench") == "on":
             sensors.append(BenchSensor(hass, entry))
         if re.match("C3|D3", api.type):
@@ -54,7 +60,7 @@ class BenchSensor(SensorEntity):
     def _update_callback(self):
         """Call update method."""
         _LOGGER.debug(
-            self.name + " update_callback state: %s", self._api.bench_temperature
+            "%s update_callback state: %s", self.name, self._api.bench_temperature
         )
         self.async_schedule_update_ha_state(True)
 
@@ -64,7 +70,8 @@ class BenchSensor(SensorEntity):
         return self._api.bench_temperature
 
     async def async_update(self):
-        _LOGGER.debug(self.name + " async_update 1 %s", self._api.bench_temperature)
+        """Update the sensor entity."""
+        _LOGGER.debug("%s async_update 1 %s", self.name, self._api.bench_temperature)
         return
 
 
@@ -92,7 +99,7 @@ class HeaterSensor(SensorEntity):
     def _update_callback(self):
         """Call update method."""
         _LOGGER.debug(
-            self.name + " update_callback state: %s", self._api.heater_temperature
+            "%s update_callback state: %s", self.name, self._api.heater_temperature
         )
         self.async_schedule_update_ha_state(True)
 
@@ -103,7 +110,8 @@ class HeaterSensor(SensorEntity):
         return self._api.heater_temperature
 
     async def async_update(self):
-        _LOGGER.debug(self.name + " async_update 1 %s", self._api.heater_temperature)
+        """Update the sensor entity."""
+        _LOGGER.debug("%s async_update 1 %s", self.name, self._api.heater_temperature)
         return
 
 
@@ -130,7 +138,7 @@ class HumiditySensor(SensorEntity):
     @callback
     def _update_callback(self):
         """Call update method."""
-        _LOGGER.debug(self.name + " update_callback state: %s", self._api.humidity)
+        _LOGGER.debug("%s update_callback state: %s", self.name, self._api.humidity)
         self.async_schedule_update_ha_state(True)
 
     @property
@@ -139,5 +147,60 @@ class HumiditySensor(SensorEntity):
         return self._api.humidity
 
     async def async_update(self):
-        _LOGGER.debug(self.name + " async_update 1 %s", self._api.humidity)
+        """Update the sensor entity."""
+        _LOGGER.debug("%s async_update 1 %s", self.name, self._api.humidity)
         return
+
+
+timer_desc = SensorEntityDescription(
+    key="preset_timer",
+    device_class=SensorDeviceClass.DURATION,
+    entity_category=EntityCategory.DIAGNOSTIC,
+    has_entity_name=True,
+    name="Preset timer",
+    native_unit_of_measurement=UnitOfTime.MINUTES,
+)
+
+heat_timer_desc = SensorEntityDescription(
+    key="heater_timer",
+    device_class=SensorDeviceClass.DURATION,
+    entity_category=EntityCategory.DIAGNOSTIC,
+    has_entity_name=True,
+    name="Heater timer",
+    native_unit_of_measurement=UnitOfTime.MINUTES,
+)
+
+
+class TimerSensor(SensorEntity):
+    """Class for Timer Sensors."""
+
+    entity_description: SensorEntityDescription
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        description: SensorEntityDescription,
+    ):
+        self.entity_description = description
+        self._api = hass.data[DOMAIN][entry.entry_id]
+        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
+        self._attr_unique_id = self.entity_description.name
+
+    @property
+    def native_value(self):
+        if self.entity_description.key == "preset_timer":
+            return self._api.timer_val
+        elif self.entity_description.key == "heater_timer":
+            return self._api.heattimer_val
+        return None
+
+    async def async_added_to_hass(self):
+        """Register callbacks."""
+        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
+
+    @callback
+    def _update_callback(self):
+        """Call update method."""
+        _LOGGER.debug("%s update_callback state: %s", self.name, self._api.is_on)
+        self.async_schedule_update_ha_state(True)
