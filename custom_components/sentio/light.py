@@ -2,7 +2,7 @@
 
 import logging
 
-from homeassistant.components.light import ATTR_BRIGHTNESS, LightEntity, ColorMode
+from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEntity
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo
