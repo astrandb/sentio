@@ -21,10 +21,18 @@ async def async_get_config_entry_diagnostics(
     """Return diagnostics for a config entry."""
 
     _api: SentioPro = hass.data[DOMAIN][config_entry.entry_id]
+
+    config_dict = {}
+    for line in _api.config_raw.lower().splitlines():
+        res = line.rsplit(" ", 1)
+        val = res[1] if len(res) == 2 else None
+        if res[0] != "config":
+            config_dict[res[0]] = val
+
     config_data = {
         "type": _api.type,
         "sw_version": _api.sw_version,
-        "config": _api.config_raw,
+        "config": config_dict,
     }
 
     diagnostics_data = {
