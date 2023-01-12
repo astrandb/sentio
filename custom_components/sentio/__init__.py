@@ -90,3 +90,19 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
+
+
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+    """Migrate old entry."""
+    _LOGGER.info("Migrating from version %s", config_entry.version)
+
+    if config_entry.version == 1:
+
+        data = {**config_entry.data}
+        if "disable_fan" in data:
+            data.pop("disable_fan")
+        config_entry.data = {**data}
+        config_entry.version = 2
+
+    _LOGGER.info("Migration to version %s successful", config_entry.version)
+    return True

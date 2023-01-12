@@ -11,11 +11,13 @@
         "step": {
             "user": {
                 "data": {
-                    "serial_port": "Serial port",
-                    "disable_fan": "Disable fan"
+                    "serial_port": "Serial port"
                 },
                 "title": "Connect to the device",
-                "description": "Enter the serial (RS485) port that connects to the Sentio controller."
+                "description": "Enter the serial (RS485) port that connects to the Sentio controller.",
+                "data_description": {
+                    "serial_port": "On Linux systems - Use link from /dev/serial/by_id/ for increased stability."
+                }
             }
         }
     }
