@@ -11,11 +11,13 @@
         "step": {
             "user": {
                 "data": {
-                    "serial_port": "Serieport",
-                    "disable_fan": "Avaktivera fläkt"
+                    "serial_port": "Serieport"
                 },
                 "title": "Anslut till enheten",
-                "description": "Ange serieporten (RS485) som ansluter Sentio styrenhet."
+                "description": "Ange serieporten (RS485) som ansluter Sentio styrenhet.",
+                "data_description": {
+                    "serial_port": "På Linux-system - Använd länk från /dev/serial/by_id/ för ökad stabilitet."
+                }
             }
         }
     }

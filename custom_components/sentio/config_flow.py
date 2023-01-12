@@ -4,13 +4,13 @@ import logging
 import voluptuous as vol
 from homeassistant import config_entries, exceptions
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import selector
 from pysentio import SentioPro
 
 from .const import (  # pylint:disable=unused-import
     BAUD_RATE,
     DEFAULT_SERIAL_PORT,
     DOMAIN,
-    FAN_DISABLED,
     SERIAL_PORT,
 )
 
@@ -18,16 +18,13 @@ _LOGGER = logging.getLogger(__name__)
 
 DATA_SCHEMA = vol.Schema(
     {
-        vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): str,
-        vol.Required(FAN_DISABLED, default=False): bool,
+        vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): selector.TextSelector(),
     }
 )
 
 
 class SentioHub:
-    """
-    TODO Remove this placeholder class and replace with things from your PyPI package.
-    """
+    """Class to access device from config flow."""
 
     type = None
 
@@ -66,7 +63,7 @@ async def validate_input(hass: HomeAssistant, data):
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for sentio sauna."""
 
-    VERSION = 1
+    VERSION = 2
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
 
     async def async_step_user(self, user_input=None):
