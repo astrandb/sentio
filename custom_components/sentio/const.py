@@ -14,3 +14,5 @@ MIN_SET_TEMP = 30
 MAX_SET_TEMP = 110
 
 FAN_DISABLED = "disable_fan"
+
+HUMIDITY_MODELS = ("C3", "C3I", "D3", "D3I")

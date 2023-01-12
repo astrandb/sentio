@@ -1,6 +1,5 @@
 """Platform for sensor integration."""
 import logging
-import re
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -14,7 +13,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 
-from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
+from .const import DOMAIN, HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -31,7 +30,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
             sensors.append(SentioSensor(hass, entry, bench_temp_desc))
         if api.config("sens foil") == "on":
             sensors.append(SentioSensor(hass, entry, foil_temp_desc))
-        if re.match("C3|D3", api.type):
+        if api.type.upper() in HUMIDITY_MODELS:
             sensors.append(SentioSensor(hass, entry, humidity_desc))
         return sensors
 
