@@ -10,7 +10,7 @@
   "codeowners": [
     "@astrandb"
   ],
-  "version": "0.0.15",
+  "version": "0.0.16",
   "iot_class": "local_polling",
   "integration_type": "hub",
   "loggers": [
