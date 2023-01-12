@@ -1,7 +1,7 @@
 {
-"name": "Sentio",
-"render_readme": true,
-"homeassistant": "2023.1.0",
-"zip_release": true,
-"filename": "sentio.zip"
+    "name": "Sentio",
+    "render_readme": true,
+    "homeassistant": "2023.1.0",
+    "zip_release": true,
+    "filename": "sentio.zip"
 }
