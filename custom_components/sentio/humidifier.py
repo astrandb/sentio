@@ -6,8 +6,9 @@ from homeassistant.components.humidifier import (
     HumidifierDeviceClass,
     HumidifierEntity,
     HumidifierEntityDescription,
+    HumidifierEntityFeature,
 )
-from homeassistant.components.humidifier.const import MODE_NORMAL, SUPPORT_MODES
+from homeassistant.components.humidifier.const import MODE_NORMAL
 
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
@@ -53,7 +54,7 @@ class SaunaHumidifier(HumidifierEntity):
         self._attr_has_entity_name = True
         self._attr_should_poll = False
 
-        self._attr_supported_modes = SUPPORT_MODES
+        self._attr_supported_modes = HumidifierEntityFeature.MODES
         self._attr_mode = MODE_NORMAL
 
     async def async_added_to_hass(self):
