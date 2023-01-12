@@ -23,6 +23,7 @@ PLATFORMS = [
     Platform.SWITCH,
     Platform.FAN,
     Platform.CLIMATE,
+    Platform.HUMIDIFIER,
 ]
 
 SCAN_INTERVAL = timedelta(seconds=60)
