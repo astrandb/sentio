@@ -10,8 +10,6 @@ The user running Homeassistant should be added to group dialout - not needed if 
 
 ## Installation
 ### Install with HACS (Recommended)
-Add this repository as a custom repo in HACS settings.
-
 Search for Sentio integration and install it directly from HACS. HACS will keep track of updates and you can easily upgrade to latest version.
 
 Restart Home Assistant
