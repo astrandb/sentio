@@ -1,5 +1,5 @@
 # Sentio integration for Home Assistant
-[![Sentio](https://img.shields.io/github/v/release/astrandb/sentio)](https://github.com/astrandb/sentio/releases/latest) [![hacs_badge](https://img.shields.io/badge/HACS-Custom-blue.svg)](https://github.com/custom-components/hacs)  [![Downloads for latest release](https://img.shields.io/github/downloads-pre/astrandb/sentio/latest/total.svg)](https://github.com/astrandb/sentio/releases/latest)
+[![Sentio](https://img.shields.io/github/v/release/astrandb/sentio)](https://github.com/astrandb/sentio/releases/latest) [![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/custom-components/hacs)  [![Downloads for latest release](https://img.shields.io/github/downloads-pre/astrandb/sentio/latest/total.svg)](https://github.com/astrandb/sentio/releases/latest)
 
 Custom component for Sentiotec sauna controller for integration in  Home Assistant
 
