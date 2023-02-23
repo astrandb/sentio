@@ -1,19 +1,19 @@
 {
   "domain": "sentio",
   "name": "Sentio sauna",
-  "config_flow": true,
-  "documentation": "https://github.com/astrandb/sentio",
-  "issue_tracker": "https://github.com/astrandb/sentio/issues",
-  "requirements": [
-    "pysentio==0.0.52"
-  ],
   "codeowners": [
     "@astrandb"
   ],
-  "version": "0.0.16",
-  "iot_class": "local_polling",
+  "config_flow": true,
+  "documentation": "https://github.com/astrandb/sentio",
   "integration_type": "hub",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/astrandb/sentio/issues",
   "loggers": [
     "pysentio"
-  ]
+  ],
+  "requirements": [
+    "pysentio==0.0.52"
+  ],
+  "version": "0.0.16"
 }
