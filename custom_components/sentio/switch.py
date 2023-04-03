@@ -33,7 +33,7 @@ class SaunaOn(SwitchEntity):
         self._attr_unique_id = "sauna_switch"
         self._attr_has_entity_name = True
         self._attr_should_poll = False
-        self._attr_name = "Heater"
+        self._attr_translation_key = "heater"
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
         self._attr_icon = "mdi:radiator"
         self._api = hass.data[DOMAIN][entry.entry_id]
@@ -74,7 +74,7 @@ timer_desc = SwitchEntityDescription(
     entity_category=EntityCategory.DIAGNOSTIC,
     has_entity_name=True,
     icon="mdi:progress-clock",
-    name="Preset timer",
+    translation_key="preset_timer",
 )
 
 

@@ -32,7 +32,7 @@ class SaunaLight(LightEntity):
         self._attr_unique_id = "sauna_light"
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
         self._attr_should_poll = False
-        self._attr_name = "Light"
+        self._attr_translation_key = "light"
         self._attr_has_entity_name = True
         if self._api.config("light dimming") == "on":
             self._attr_supported_color_modes = {ColorMode.BRIGHTNESS}

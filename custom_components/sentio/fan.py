@@ -38,7 +38,7 @@ class SaunaFan(FanEntity):
         self._attr_unique_id = "sauna_fan"
         self._attr_has_entity_name = True
         self._attr_should_poll = False
-        self._attr_name = "Fan"
+        self._attr_translation_key = "fan"
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
 
     async def async_added_to_hass(self):
