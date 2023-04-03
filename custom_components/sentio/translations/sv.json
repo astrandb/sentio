@@ -20,5 +20,50 @@
                 }
             }
         }
+    },
+    "entity": {
+        "fan": {
+            "fan": {
+                "name": "Fläkt"
+            }
+        },
+        "humidifier": {
+            "humidifier": {
+                "name": "Ånggenerator"
+            }
+        },
+        "light": {
+            "light": {
+                "name": "Belysning"
+            }
+        },
+        "sensor": {
+            "heater_timer": {
+                "name": "Återstående tid"
+            },
+            "preset_timer": {
+                "name": "Starttid"
+            },
+            "foil_temp": {
+                "name": "Folie"
+            },
+            "heater_temp": {
+                "name": "Värmeaggregat"
+            },
+            "bench_temp": {
+                "name": "Bänk"
+            },
+            "humidity": {
+                "name": "Luftfuktighet"
+            }
+        },
+        "switch": {
+            "heater": {
+                "name": "Värmeaggregat"
+            },
+            "preset_time": {
+                "name": "Fördröjd start"
+            }
+        }
     }
 }

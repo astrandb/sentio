@@ -42,7 +42,7 @@ timer_desc = SensorEntityDescription(
     device_class=SensorDeviceClass.DURATION,
     entity_category=EntityCategory.DIAGNOSTIC,
     has_entity_name=True,
-    name="Preset timer",
+    translation_key="preset_timer",
     native_unit_of_measurement=UnitOfTime.MINUTES,
 )
 
@@ -51,7 +51,7 @@ heat_timer_desc = SensorEntityDescription(
     device_class=SensorDeviceClass.DURATION,
     entity_category=EntityCategory.DIAGNOSTIC,
     has_entity_name=True,
-    name="Heater timer",
+    translation_key="heater_timer",
     native_unit_of_measurement=UnitOfTime.MINUTES,
 )
 
@@ -59,7 +59,7 @@ foil_temp_desc = SensorEntityDescription(
     key="foil_temp",
     device_class=SensorDeviceClass.TEMPERATURE,
     has_entity_name=True,
-    name="Foil",
+    translation_key="foil_temp",
     native_unit_of_measurement=UnitOfTemperature.CELSIUS,
     state_class=SensorStateClass.MEASUREMENT,
 )
@@ -69,7 +69,7 @@ heater_temp_desc = SensorEntityDescription(
     key="heater_temp",
     device_class=SensorDeviceClass.TEMPERATURE,
     has_entity_name=True,
-    name="Heater",
+    translation_key="heater_temp",
     native_unit_of_measurement=UnitOfTemperature.CELSIUS,
     state_class=SensorStateClass.MEASUREMENT,
 )
@@ -79,7 +79,7 @@ bench_temp_desc = SensorEntityDescription(
     key="bench_temp",
     device_class=SensorDeviceClass.TEMPERATURE,
     has_entity_name=True,
-    name="Bench",
+    translation_key="bench_temp",
     native_unit_of_measurement=UnitOfTemperature.CELSIUS,
     state_class=SensorStateClass.MEASUREMENT,
 )
@@ -88,7 +88,7 @@ humidity_desc = SensorEntityDescription(
     key="humidity",
     device_class=SensorDeviceClass.HUMIDITY,
     has_entity_name=True,
-    name="Humidity",
+    translation_key="humidity",
     native_unit_of_measurement=PERCENTAGE,
     state_class=SensorStateClass.MEASUREMENT,
 )

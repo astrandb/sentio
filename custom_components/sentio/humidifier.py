@@ -35,7 +35,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 vaporizer_desc = HumidifierEntityDescription(
     key="vaporizer",
     device_class=HumidifierDeviceClass.HUMIDIFIER,
-    name="Vaporizer",
+    translation_key="vaporizer",
 )
 
 
