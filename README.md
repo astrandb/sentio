@@ -18,7 +18,7 @@ HACS can be found [here](https://hacs.xyz/)
 ### Install manually
 If you want to install manually, you probably already know how to proceed.
 ## Configuration
-Goto Configuration->Integrations and press (+ Add integration)
+Goto Settings->Integrations and press (+ Add integration)
 
 Search for Sentio
 
