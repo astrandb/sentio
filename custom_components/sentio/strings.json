@@ -59,7 +59,7 @@
           "heater": {
               "name": "Heater"
           },
-          "preset_time": {
+          "preset_timer": {
               "name": "Preset timer"
           }
       }
