@@ -15,6 +15,7 @@ categories:
   - title: 'Dependencies'
     labels:
       - 'dependencies'
+      - 'dependency'
   - title: 'Maintenance'
     labels: 
       - 'chore'
