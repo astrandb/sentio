@@ -23,12 +23,12 @@ body:
       value: |
         ## Environment
   - type: input
-    id: version_easee
+    id: version_sentio
     validations:
       required: true
     attributes:
-      label: Version of Easee integration having the issue?
-      placeholder: easee-
+      label: Version of Sentio integration having the issue?
+      placeholder: sentio-
       description: >
         Can be found in the Configuration panel -> Info.
   - type: input
