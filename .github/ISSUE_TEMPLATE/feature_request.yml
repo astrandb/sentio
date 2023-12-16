@@ -21,12 +21,12 @@ body:
       value: |
         ## Environment
   - type: input
-    id: version_easee
+    id: version_sentio
     validations:
       required: true
     attributes:
       label: What version of the integration are you using?
-      placeholder: easee-
+      placeholder: sentio-
       description: >
         Can be found in the Configuration panel -> Info.
   - type: textarea
