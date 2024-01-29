@@ -1,8 +1,9 @@
 """The sentio sauna integration."""
-import logging
 from datetime import timedelta
+import logging
 
-# import voluptuous as vol
+from pysentio import SentioPro
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -10,11 +11,8 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
-from pysentio import SentioPro
 
 from .const import BAUD_RATE, DOMAIN, MANUFACTURER, SERIAL_PORT, SIGNAL_UPDATE_SENTIO
-
-# CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 PLATFORMS = [
     Platform.LIGHT,
@@ -28,11 +26,6 @@ PLATFORMS = [
 SCAN_INTERVAL = timedelta(seconds=60)
 
 _LOGGER = logging.getLogger(__name__)
-
-
-async def async_setup(hass: HomeAssistant, config: dict):
-    """Set up the sentio sauna component."""
-    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
@@ -85,7 +78,6 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     _LOGGER.info("Migrating from version %s", config_entry.version)
 
     if config_entry.version == 1:
-
         data = {**config_entry.data}
         if "disable_fan" in data:
             data.pop("disable_fan")

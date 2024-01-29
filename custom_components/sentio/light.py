@@ -1,12 +1,13 @@
-"""Light component for Sentio sauna controller"""
+"""Light component for Sentio sauna controller."""
 
 import logging
+
+from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEntity
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo
-from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
 
@@ -53,13 +54,16 @@ class SaunaLight(LightEntity):
 
     @property
     def is_on(self):
+        """Return the state."""
         return self._api.light_is_on
 
     @property
     def brightness(self):
+        """Set the brightness."""
         return self._api.light_val
 
     async def async_turn_on(self, **kwargs):
+        """Turn the light on."""
         _LOGGER.debug(
             "%s Turn_on; Brightness: %s", self.name, kwargs.get(ATTR_BRIGHTNESS)
         )
@@ -70,6 +74,7 @@ class SaunaLight(LightEntity):
         self.async_schedule_update_ha_state(True)
 
     async def async_turn_off(self, **kwargs):
+        """Turn the light off."""
         _LOGGER.debug("%s Turn_off", self.name)
         self._api.set_light(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)

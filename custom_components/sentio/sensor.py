@@ -19,7 +19,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Setup the sensor entities."""
+    """Set up the sensor entities."""
 
     def get_entities():
         api = hass.data[DOMAIN][entry.entry_id]
@@ -105,6 +105,8 @@ class SentioSensor(SensorEntity):
         entry: ConfigEntry,
         description: SensorEntityDescription,
     ):
+        """Init the SentioSensor class."""
+
         self.entity_description = description
         self._attr_should_poll = False
         self._api = hass.data[DOMAIN][entry.entry_id]
@@ -113,6 +115,7 @@ class SentioSensor(SensorEntity):
 
     @property
     def native_value(self):
+        """Return native value."""
         if self.entity_description.key == "preset_timer":
             return self._api.timer_val
         if self.entity_description.key == "heater_timer":

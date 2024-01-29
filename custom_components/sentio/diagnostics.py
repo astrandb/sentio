@@ -1,11 +1,12 @@
 """Diagnostics support for Sentio."""
 from __future__ import annotations
 
+from pysentio import SentioPro
+
 from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
-from pysentio import SentioPro
 
 from .const import DOMAIN
 
