@@ -1,42 +1,77 @@
-name-template: 'Example title - v$NEXT_PATCH_VERSION'
-tag-template: 'v$NEXT_PATCH_VERSION'
+name-template: "Example title - v$NEXT_PATCH_VERSION"
+tag-template: "v$NEXT_PATCH_VERSION"
 exclude-labels:
-  - 'skip-changelog'
+  - "skip-changelog"
 categories:
-  - title: 'New Features'
+  - title: "New Features"
     labels:
-      - 'feature'
-      - 'enhancement'
-  - title: 'Bug Fixes'
+      - "feature"
+      - "enhancement"
+  - title: "Breaking changes"
     labels:
-      - 'fix'
-      - 'bugfix'
-      - 'bug'
-  - title: 'Dependencies'
+      - "breaking"
+  - title: "Bug fixes"
     labels:
-      - 'dependencies'
-      - 'dependency'
-  - title: 'Maintenance'
-    labels: 
-      - 'chore'
-      - 'maintenance'
-      - 'code-quality'
-change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+      - "fix"
+      - "bugfix"
+      - "bug"
+  - title: "Translation"
+    collapse-after: 2
+    labels:
+      - "translation"
+  - title: "Dependencies"
+    collapse-after: 2
+    labels:
+      - "dependencies"
+      - "dependency"
+  - title: "Maintenance"
+    label: "maintenance"
+  - title: "Code quality and optimizations"
+    label: "code quality"
+  - title: "Development tools"
+    labels:
+      - "development tools"
+      - "dev-tools"
+
+change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 
 template: |
-  [![Downloads for this release](https://img.shields.io/github/downloads/astrandb/sentio/v$RESOLVED_VERSION/total.svg)](https://github.com/astrandb/sentio/releases/v$RESOLVED_VERSION)
+  [![Downloads for this release](https://img.shields.io/github/downloads-pre/$OWNER/$REPOSITORY/v$RESOLVED_VERSION/total.svg)](https://github.com/$OWNER/$REPOSITORY/releases/v$RESOLVED_VERSION)
 
-  ## Notable changes
+  <!--
+  ### Checklist for release
+  - Run ruff linter
+  - Run make bump - select proper variant in Makefile
+  - Review the draft below
+  - Remove this checklist
+  -->
+
+  ## Notable Changes
 
   $CHANGES
-  
+
 autolabeler:
-  - label: 'maintenance'
+  - label: "maintenance"
     files:
-      - '*.md'
-      - '.github/*'
-  - label: 'bugfix'
+      - "*.md"
+      - ".github/*"
+      - ".ruff.toml"
+      - ".pre-commit-config.yaml"
+  - label: "bugfix"
     title:
-      - '/fix/i'
- 
+      - "/fix/i"
+  - label: "code quality"
+    title:
+      - "lint"
+  - label: "translation"
+    title:
+      - "Lokalise:"
+    files:
+      - "**/translations/*.json"
+  - label: "development tools"
+    files:
+      - ".devcontainer/*"
+      - ".devcontainer.json"
+      - "Makefile"
+      - "setup.cfg"
