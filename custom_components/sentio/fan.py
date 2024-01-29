@@ -2,7 +2,7 @@
 import logging
 from typing import Any
 
-from homeassistant.components.fan import SUPPORT_SET_SPEED, FanEntity
+from homeassistant.components.fan import FanEntity, FanEntityFeature
 
 # from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
@@ -55,7 +55,7 @@ class SaunaFan(FanEntity):
     def supported_features(self):
         feat = 0
         if self._api.config("fan dimming") == "on":
-            feat = feat | SUPPORT_SET_SPEED
+            feat = feat | FanEntityFeature.SET_SPEED
         return feat
 
     @property

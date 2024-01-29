@@ -2,15 +2,7 @@
 
 import logging
 
-from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE,
-    CURRENT_HVAC_OFF,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    SUPPORT_TARGET_TEMPERATURE,
-)
+from homeassistant.components.climate import ClimateEntity, ClimateEntityFeature, HVACAction, HVACMode
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
@@ -47,8 +39,8 @@ class SaunaClimate(ClimateEntity):
         self._attr_temperature_unit = UnitOfTemperature.CELSIUS
         self._attr_min_temp = MIN_SET_TEMP
         self._attr_precision = 1.0
-        self._attr_hvac_modes = [HVAC_MODE_OFF, HVAC_MODE_HEAT]
-        self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE
+        self._attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT]
+        self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         self._attr_target_temperature_step = 1.0
 
     async def async_added_to_hass(self):
@@ -71,11 +63,11 @@ class SaunaClimate(ClimateEntity):
 
     @property
     def hvac_action(self):
-        if self.hvac_mode == HVAC_MODE_OFF:
-            return CURRENT_HVAC_OFF
+        if self.hvac_mode == HVACMode.OFF:
+            return HVACAction.OFF
         if self.current_temperature < self.target_temperature:
-            return CURRENT_HVAC_HEAT
-        return CURRENT_HVAC_IDLE
+            return HVACAction.HEATING
+        return HVACAction.IDLE
 
     @property
     def current_temperature(self):
@@ -88,7 +80,7 @@ class SaunaClimate(ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
         _LOGGER.debug("Sauna hvac_mode = %s", hvac_mode)
-        if hvac_mode == HVAC_MODE_HEAT:
+        if hvac_mode == HVACMode.HEAT:
             self._api.set_sauna(PYS_STATE_ON)
         else:
             self._api.set_sauna(PYS_STATE_OFF)
