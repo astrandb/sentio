@@ -1,11 +1,12 @@
 """Config flow for sentio sauna integration."""
 import logging
 
+from pysentio import SentioPro
 import voluptuous as vol
+
 from homeassistant import config_entries, exceptions
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import selector
-from pysentio import SentioPro
 
 from .const import (  # pylint:disable=unused-import
     BAUD_RATE,

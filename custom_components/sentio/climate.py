@@ -1,13 +1,19 @@
-"""Climate component for Sentio sauna controller"""
+"""Climate component for Sentio sauna controller."""
 
 import logging
 
-from homeassistant.components.climate import ClimateEntity, ClimateEntityFeature, HVACAction, HVACMode
+from pysentio import PYS_STATE_OFF, PYS_STATE_ON
+
+from homeassistant.components.climate import (
+    ClimateEntity,
+    ClimateEntityFeature,
+    HVACAction,
+    HVACMode,
+)
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
-from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from .const import DOMAIN, MAX_SET_TEMP, MIN_SET_TEMP, SIGNAL_UPDATE_SENTIO
 
@@ -15,7 +21,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Setup the climate entities."""
+    """Set up the climate entities."""
 
     def get_climates():
         return [SaunaClimate(hass, entry)]
@@ -55,14 +61,17 @@ class SaunaClimate(ClimateEntity):
 
     @property
     def max_temp(self):
+        """Return max set temp."""
         return min(MAX_SET_TEMP, int(self._api.config("max preset temp")))
 
     @property
     def hvac_mode(self):
+        """Return hvac mode."""
         return self._api.hvac_mode
 
     @property
     def hvac_action(self):
+        """Return hvac action."""
         if self.hvac_mode == HVACMode.OFF:
             return HVACAction.OFF
         if self.current_temperature < self.target_temperature:
@@ -71,10 +80,12 @@ class SaunaClimate(ClimateEntity):
 
     @property
     def current_temperature(self):
+        """Return current temperature."""
         return self._api.bench_temperature
 
     @property
     def target_temperature(self):
+        """Return target temperature."""
         return self._api.target_temperature
 
     async def async_set_hvac_mode(self, hvac_mode):
@@ -92,9 +103,7 @@ class SaunaClimate(ClimateEntity):
         temp = kwargs.get(ATTR_TEMPERATURE)
         self._api.set_sauna_val(int(temp))
         _LOGGER.debug("Sauna New target temp => %s", temp)
-        return
 
     async def async_update(self):
         """Update climate entity."""
         _LOGGER.debug("Sauna climate async_update 1 %s", self._api.hvac_mode)
-        return

@@ -1,12 +1,13 @@
 """Switch module for Sentio integration."""
 import logging
 
+from pysentio import PYS_STATE_OFF, PYS_STATE_ON
+
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo, EntityCategory
-from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
 
@@ -14,7 +15,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Setup the switches."""
+    """Set up the switches."""
 
     def get_entities():
         entities = [SaunaOn(hass, entry)]
@@ -50,15 +51,18 @@ class SaunaOn(SwitchEntity):
 
     @property
     def is_on(self):
+        """Return state."""
         return self._api.is_on
 
     async def async_turn_on(self, **kwargs):
+        """Turn on the switch."""
         _LOGGER.debug("%s Turn_on", self.name)
         self._api.set_sauna(PYS_STATE_ON)
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_turn_off(self, **kwargs):
+        """Turn off the switch."""
         _LOGGER.debug("%s Turn_off", self.name)
         self._api.set_sauna(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)
@@ -89,6 +93,7 @@ class TimerSwitch(SwitchEntity):
         entry: ConfigEntry,
         description: SwitchEntityDescription,
     ):
+        """Init the TimerSwitch class."""
         self.entity_description = description
         self._api = hass.data[DOMAIN][entry.entry_id]
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
@@ -96,6 +101,7 @@ class TimerSwitch(SwitchEntity):
 
     @property
     def is_on(self):
+        """Return the state."""
         if self.entity_description.key == "preset_timer":
             return self._api.timer_is_on
         if self.entity_description.key == "heater_timer":
@@ -103,6 +109,7 @@ class TimerSwitch(SwitchEntity):
         return None
 
     async def async_turn_on(self, **kwargs):
+        """Turn on the preset timer."""
         if self.entity_description.key == "preset_timer":
             self._api.set_timer(PYS_STATE_ON)
         if self.entity_description.key == "heater_timer":
@@ -111,6 +118,7 @@ class TimerSwitch(SwitchEntity):
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_turn_off(self, **kwargs):
+        """Turn off the preset timer."""
         if self.entity_description.key == "preset_timer":
             self._api.set_timer(PYS_STATE_OFF)
         if self.entity_description.key == "heater_timer":

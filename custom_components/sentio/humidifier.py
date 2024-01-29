@@ -1,6 +1,8 @@
-"""Humidifier component for Sentio sauna controller"""
+"""Humidifier component for Sentio sauna controller."""
 
 import logging
+
+from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.humidifier import (
     HumidifierDeviceClass,
@@ -12,7 +14,6 @@ from homeassistant.components.humidifier.const import MODE_NORMAL
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
-from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from .const import DOMAIN, HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
 
@@ -20,7 +21,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Setup the humidifier entities."""
+    """Set up the humidifier entities."""
 
     def get_humidifiers():
         api = hass.data[DOMAIN][entry.entry_id]
@@ -67,14 +68,17 @@ class SaunaHumidifier(HumidifierEntity):
 
     @property
     def is_on(self):
+        """Return the state."""
         return self._api.steam
 
     @property
     def target_humidity(self):
+        """Return target humidity."""
         return self._api.steam_val
 
     @property
     def mode(self):
+        """Return operating mode."""
         return MODE_NORMAL
 
     async def async_turn_on(self, **kwargs):
@@ -92,4 +96,3 @@ class SaunaHumidifier(HumidifierEntity):
     async def async_set_humidity(self, humidity):
         """Set new target humidity."""
         self._api.set_steam_val(int(humidity))
-        return

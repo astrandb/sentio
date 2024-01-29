@@ -2,6 +2,9 @@
 import logging
 from typing import Any
 
+# from homeassistant.helpers.entity import Entity
+from pysentio import PYS_STATE_OFF, PYS_STATE_ON
+
 from homeassistant.components.fan import FanEntity, FanEntityFeature
 
 # from homeassistant.const import STATE_OFF, STATE_ON
@@ -9,16 +12,13 @@ from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo
 
-# from homeassistant.helpers.entity import Entity
-from pysentio import PYS_STATE_OFF, PYS_STATE_ON
-
 from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Setup entry."""
+    """Set up entry."""
 
     def get_fans():
         entities = []
@@ -53,6 +53,7 @@ class SaunaFan(FanEntity):
 
     @property
     def supported_features(self):
+        """Return supported features."""
         feat = 0
         if self._api.config("fan dimming") == "on":
             feat = feat | FanEntityFeature.SET_SPEED
@@ -60,6 +61,7 @@ class SaunaFan(FanEntity):
 
     @property
     def is_on(self):
+        """Return state."""
         return self._api.fan
 
     async def async_set_percentage(self, percentage: int) -> None:
@@ -80,12 +82,14 @@ class SaunaFan(FanEntity):
         self.async_schedule_update_ha_state(True)
 
     async def async_turn_off(self, **kwargs):
+        """Turn off the fan."""
         _LOGGER.debug("%s Turn_off", self.name)
         self._api.set_fan(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)
 
     @property
     def percentage(self):
+        """Return percentage."""
         return self._api.fan_val
 
     async def async_update(self):
