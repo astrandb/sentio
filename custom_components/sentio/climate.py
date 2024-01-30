@@ -95,7 +95,7 @@ class SaunaClimate(ClimateEntity):
             self._api.set_sauna(PYS_STATE_ON)
         else:
             self._api.set_sauna(PYS_STATE_OFF)
-        self.async_update_ha_state(True)
+        await self.async_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_set_temperature(self, **kwargs):
