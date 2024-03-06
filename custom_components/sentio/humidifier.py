@@ -84,13 +84,13 @@ class SaunaHumidifier(HumidifierEntity):
     async def async_turn_on(self, **kwargs):
         """Turn vaporizer on."""
         self._api.set_steam(PYS_STATE_ON)
-        self.async_update_ha_state(True)
+        await self.async_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_turn_off(self, **kwargs):
         """Turn vaporizer off."""
         self._api.set_steam(PYS_STATE_OFF)
-        self.async_update_ha_state(True)
+        await self.async_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
     async def async_set_humidity(self, humidity):
