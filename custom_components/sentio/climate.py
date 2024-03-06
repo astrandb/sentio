@@ -10,7 +10,7 @@ from homeassistant.components.climate import (
     HVACAction,
     HVACMode,
 )
-from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
+from homeassistant.const import ATTR_TEMPERATURE, PRECISION_WHOLE, UnitOfTemperature
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
@@ -32,6 +32,15 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class SaunaClimate(ClimateEntity):
     """Climate entity class."""
 
+    _attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT]
+    _attr_supported_features = (
+        ClimateEntityFeature.TARGET_TEMPERATURE
+        | ClimateEntityFeature.TURN_OFF
+        | ClimateEntityFeature.TURN_ON
+    )
+    _attr_target_temperature_step = 1.0
+    _enable_turn_on_off_backwards_compatibility = False
+
     def __init__(self, hass, entry):
         """Initialize the device."""
         self._entryid = entry.entry_id
@@ -44,10 +53,7 @@ class SaunaClimate(ClimateEntity):
 
         self._attr_temperature_unit = UnitOfTemperature.CELSIUS
         self._attr_min_temp = MIN_SET_TEMP
-        self._attr_precision = 1.0
-        self._attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT]
-        self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
-        self._attr_target_temperature_step = 1.0
+        self._attr_precision = PRECISION_WHOLE
 
     async def async_added_to_hass(self):
         """Register callbacks."""
