@@ -11,26 +11,30 @@ from homeassistant.components.humidifier import (
     HumidifierEntityFeature,
 )
 from homeassistant.components.humidifier.const import MODE_NORMAL
-from homeassistant.core import callback
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+):
     """Set up the humidifier entities."""
 
-    def get_humidifiers():
+    def get_humidifiers() -> list[SaunaHumidifier]:
         api = hass.data[DOMAIN][entry.entry_id]
-        entities = []
+        entities: list[SaunaHumidifier] = []
         if api.type.upper() in HUMIDITY_MODELS:
             entities.append(SaunaHumidifier(hass, entry, vaporizer_desc))
         return entities
 
-    async_add_entities(await hass.async_add_job(get_humidifiers), True)
+    async_add_entities(get_humidifiers())
 
 
 vaporizer_desc = HumidifierEntityDescription(

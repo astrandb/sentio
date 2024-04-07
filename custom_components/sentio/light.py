@@ -5,22 +5,26 @@ import logging
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEntity
-from homeassistant.core import callback
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+):
     """Set up the entry."""
 
-    def get_lights():
+    def get_lights() -> list[SaunaLight]:
         return [SaunaLight(hass, entry)]
 
-    async_add_entities(await hass.async_add_job(get_lights), True)
+    async_add_entities(get_lights())
 
 
 class SaunaLight(LightEntity):
