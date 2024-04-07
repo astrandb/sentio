@@ -1,4 +1,5 @@
 """Platform for sensor integration."""
+
 import logging
 
 from homeassistant.components.sensor import (
@@ -12,16 +13,19 @@ from homeassistant.const import PERCENTAGE, UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo, EntityCategory
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+):
     """Set up the sensor entities."""
 
-    def get_entities():
+    def get_entities() -> list[SentioSensor]:
         api = hass.data[DOMAIN][entry.entry_id]
         sensors = [SentioSensor(hass, entry, heater_temp_desc)]
         sensors.append(SentioSensor(hass, entry, timer_desc))
@@ -34,7 +38,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
             sensors.append(SentioSensor(hass, entry, humidity_desc))
         return sensors
 
-    async_add_entities(await hass.async_add_job(get_entities), True)
+    async_add_entities(get_entities())
 
 
 timer_desc = SensorEntityDescription(

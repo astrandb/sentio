@@ -10,23 +10,27 @@ from homeassistant.components.climate import (
     HVACAction,
     HVACMode,
 )
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, PRECISION_WHOLE, UnitOfTemperature
-from homeassistant.core import callback
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, MAX_SET_TEMP, MIN_SET_TEMP, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+):
     """Set up the climate entities."""
 
-    def get_climates():
+    def get_climates() -> list[SaunaClimate]:
         return [SaunaClimate(hass, entry)]
 
-    async_add_entities(await hass.async_add_job(get_climates), True)
+    async_add_entities(get_climates())
 
 
 class SaunaClimate(ClimateEntity):

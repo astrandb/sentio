@@ -1,4 +1,5 @@
 """Switch module for Sentio integration."""
+
 import logging
 
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
@@ -8,21 +9,24 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo, EntityCategory
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+):
     """Set up the switches."""
 
-    def get_entities():
+    def get_entities() -> list[SwitchEntity]:
         entities = [SaunaOn(hass, entry)]
         entities.append(TimerSwitch(hass, entry, timer_desc))
         return entities
 
-    async_add_entities(await hass.async_add_job(get_entities), True)
+    async_add_entities(get_entities())
 
 
 class SaunaOn(SwitchEntity):

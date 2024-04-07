@@ -1,31 +1,33 @@
 """Fan entity."""
+
 import logging
 from typing import Any
 
-# from homeassistant.helpers.entity import Entity
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.fan import FanEntity, FanEntityFeature
-
-# from homeassistant.const import STATE_OFF, STATE_ON
-from homeassistant.core import callback
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+):
     """Set up entry."""
 
-    def get_fans():
+    def get_fans() -> list[SaunaFan]:
         entities = []
         entities.append(SaunaFan(hass, entry))
         return entities
 
-    async_add_entities(await hass.async_add_job(get_fans), True)
+    async_add_entities(get_fans())
 
 
 class SaunaFan(FanEntity):
