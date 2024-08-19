@@ -56,7 +56,7 @@ class SaunaFan(FanEntity):
     @property
     def supported_features(self):
         """Return supported features."""
-        feat = 0
+        feat = FanEntityFeature.TURN_OFF | FanEntityFeature.TURN_ON
         if self._api.config("fan dimming") == "on":
             feat = feat | FanEntityFeature.SET_SPEED
         return feat
