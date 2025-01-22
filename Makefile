@@ -1,5 +1,3 @@
-src_dir := custom_components/sentio
-
 bump:
 	bumpver update --patch --no-fetch
 
@@ -12,8 +10,11 @@ bump_major:
 bump_beta:
 	bumpver update --no-fetch --patch --tag=beta --tag-num
 
-bump_beta_next:
-	bumpver update --no-fetch --tag-num --commit
+bump_dev:
+	bumpver update --no-fetch --patch --tag=dev --tag-num
 
-bump_remove_beta_tag:
-	bumpver update --no-fetch --tag=final --commit --commit-message="Final release from {old_version} to {new_version}"
+bump_next_pre:
+	bumpver update --no-fetch --tag-num
+
+bump_final:
+	bumpver update --no-fetch --tag=final
