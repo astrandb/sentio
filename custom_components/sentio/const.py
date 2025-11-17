@@ -7,6 +7,7 @@ MANUFACTURER = "Sentiotec"
 DEVICE_NAME = "Sentio Pro Sauna Controller"
 
 SERIAL_PORT = "serial_port"
+HEATER_POWER = "heater_power"
 DEFAULT_SERIAL_PORT = "/dev/ttyUSB0"
 BAUD_RATE = 57600
 

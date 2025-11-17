@@ -9,13 +9,19 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import PERCENTAGE, UnitOfTemperature, UnitOfTime
+from homeassistant.const import (
+    PERCENTAGE,
+    UnitOfEnergy,
+    UnitOfTemperature,
+    UnitOfTime,
+    UnitOfPower,
+)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
+from .const import DOMAIN, HEATER_POWER, HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,6 +42,10 @@ async def async_setup_entry(
             sensors.append(SentioSensor(hass, entry, foil_temp_desc))
         if api.type.upper() in HUMIDITY_MODELS:
             sensors.append(SentioSensor(hass, entry, humidity_desc))
+        if entry.data.get(HEATER_POWER, 0) > 0:
+            sensors.append(SentioSensor(hass, entry, heater_power_desc))
+        if entry.data.get(HEATER_POWER, 0) > 0:
+            sensors.append(SentioSensor(hass, entry, heater_energy_desc))
         return sensors
 
     async_add_entities(get_entities())
@@ -97,6 +107,23 @@ humidity_desc = SensorEntityDescription(
     state_class=SensorStateClass.MEASUREMENT,
 )
 
+heater_power_desc = SensorEntityDescription(
+    key="heater_power",
+    device_class=SensorDeviceClass.POWER,
+    has_entity_name=True,
+    native_unit_of_measurement=UnitOfPower.KILO_WATT,
+    suggested_display_precision=1,
+    state_class=SensorStateClass.MEASUREMENT,
+)
+
+heater_energy_desc = SensorEntityDescription(
+    key="heater_energy",
+    device_class=SensorDeviceClass.ENERGY,
+    has_entity_name=True,
+    native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+    state_class=SensorStateClass.TOTAL_INCREASING,
+)
+
 
 class SentioSensor(SensorEntity):
     """Class for Sentio sensors."""
@@ -111,11 +138,13 @@ class SentioSensor(SensorEntity):
     ):
         """Init the SentioSensor class."""
 
+        self.entry = entry
         self.entity_description = description
         self._attr_should_poll = False
         self._api = hass.data[DOMAIN][entry.entry_id]
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
         self._attr_unique_id = self.entity_description.key
+        self.heater_energy = 0
 
     @property
     def native_value(self):
@@ -132,6 +161,21 @@ class SentioSensor(SensorEntity):
             return self._api.heater_temperature
         if self.entity_description.key == "humidity":
             return self._api.humidity
+        if self.entity_description.key == "heater_power":
+            return (
+                self.entry.data.get(HEATER_POWER, 0)
+                if self._api.is_on
+                and (self._api.heater_temperature < self._api.target_temperature)
+                else 0
+            )
+        if self.entity_description.key == "heater_energy":
+            self.heater_energy += (
+                (self.entry.data.get(HEATER_POWER, 0) / 60.0)
+                if self._api.is_on
+                and (self._api.heater_temperature < self._api.target_temperature)
+                else 0
+            )
+            return self.heater_energy
         return None
 
     async def async_added_to_hass(self):

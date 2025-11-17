@@ -5,7 +5,8 @@
         "title": "Connect to the device",
         "data": {
           "serial_port": "Serial port",
-          "disable_fan": "Disable fan"
+          "disable_fan": "Disable fan",
+          "heater_power": "Heater nominal power (kW)"
         },
         "description": "Enter the serial (RS485) port that connects to the Sentio controller."
       }
@@ -20,48 +21,48 @@
     }
   },
   "entity": {
+    "fan": {
       "fan": {
-          "fan": {
-              "name": "Fan"
-          }
-      },
-      "humidifier": {
-          "humidifier": {
-              "name": "Vaporizer"
-          }
-      },
-      "light": {
-          "light": {
-              "name": "Light"
-          }
-      },
-      "sensor": {
-          "heater_timer": {
-              "name": "Heater timer"
-          },
-          "preset_timer": {
-              "name": "Preset timer"
-          },
-          "foil_temp": {
-              "name": "Foil"
-          },
-          "heater_temp": {
-              "name": "Heater"
-          },
-          "bench_temp": {
-              "name": "Bench"
-          },
-          "humidity": {
-              "name": "Humidity"
-          }
-      },
-      "switch": {
-          "heater": {
-              "name": "Heater"
-          },
-          "preset_timer": {
-              "name": "Preset timer"
-          }
+        "name": "Fan"
       }
+    },
+    "humidifier": {
+      "humidifier": {
+        "name": "Vaporizer"
+      }
+    },
+    "light": {
+      "light": {
+        "name": "Light"
+      }
+    },
+    "sensor": {
+      "heater_timer": {
+        "name": "Heater timer"
+      },
+      "preset_timer": {
+        "name": "Preset timer"
+      },
+      "foil_temp": {
+        "name": "Foil"
+      },
+      "heater_temp": {
+        "name": "Heater"
+      },
+      "bench_temp": {
+        "name": "Bench"
+      },
+      "humidity": {
+        "name": "Humidity"
+      }
+    },
+    "switch": {
+      "heater": {
+        "name": "Heater"
+      },
+      "preset_timer": {
+        "name": "Preset timer"
+      }
+    }
   }
 }
