@@ -35,6 +35,11 @@
       }
     }
   },
+  "device": {
+    "sauna": {
+      "name": "Bastu"
+    }
+  },
   "entity": {
     "fan": {
       "fan": {

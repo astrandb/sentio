@@ -35,6 +35,11 @@
       }
     }
   },
+  "device": {
+    "sauna": {
+      "name": "Sauna"
+    }
+  },
   "entity": {
     "fan": {
       "fan": {

@@ -57,7 +57,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         identifiers={(DOMAIN, "4321")},
         manufacturer=MANUFACTURER,
         model=f"Pro {_api.type}",
-        name="Sauna",
+        translation_key="sauna",
         sw_version=_api.sw_version,
     )
     device_registry = dr.async_get(hass)
