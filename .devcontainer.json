@@ -32,7 +32,8 @@
         "python.analysis.autoSearchPaths": false,
         "[python]": {
           "editor.defaultFormatter": "charliermarsh.ruff",
-          "editor.formatOnSave": true
+          "editor.formatOnSave": true,
+          "editor.formatOnType": true
         },
         "editor.formatOnPaste": false,
         "editor.formatOnSave": true,

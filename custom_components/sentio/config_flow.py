@@ -1,17 +1,30 @@
 """Config flow for sentio sauna integration."""
+
 import logging
+from collections.abc import Mapping
+from typing import Any
 
 from pysentio import SentioPro
 import voluptuous as vol
 
-from homeassistant import config_entries, exceptions
+from homeassistant.config_entries import (
+    ConfigFlow,
+    ConfigFlowResult,
+    CONN_CLASS_LOCAL_POLL,
+)
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import selector
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.selector import (
+    NumberSelector,
+    NumberSelectorConfig,
+    TextSelector,
+)
 
 from .const import (  # pylint:disable=unused-import
     BAUD_RATE,
     DEFAULT_SERIAL_PORT,
     DOMAIN,
+    HEATER_POWER,
     SERIAL_PORT,
 )
 
@@ -19,7 +32,10 @@ _LOGGER = logging.getLogger(__name__)
 
 DATA_SCHEMA = vol.Schema(
     {
-        vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): selector.TextSelector(),
+        vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): TextSelector(),
+        vol.Required(HEATER_POWER, default=0): NumberSelector(
+            NumberSelectorConfig(min=0, max=30, step=0.1)
+        ),
     }
 )
 
@@ -61,11 +77,11 @@ async def validate_input(hass: HomeAssistant, data):
     return {"title": f"Sentio Pro {hub.type}"}
 
 
-class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class SentioConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for sentio sauna."""
 
-    VERSION = 2
-    CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
+    VERSION = 3
+    CONNECTION_CLASS = CONN_CLASS_LOCAL_POLL
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
@@ -90,10 +106,29 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user", data_schema=DATA_SCHEMA, errors=errors
         )
 
+    async def async_step_reconfigure(
+        self, user_input: Mapping[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """User initiated reconfiguration."""
+        entry = self._get_reconfigure_entry()
+        if user_input is not None:
+            return self.async_update_reload_and_abort(
+                entry,
+                data_updates=user_input,
+            )
 
-class CannotConnect(exceptions.HomeAssistantError):
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=self.add_suggested_values_to_schema(
+                data_schema=DATA_SCHEMA,
+                suggested_values=entry.data | (user_input or {}),
+            ),
+        )
+
+
+class CannotConnect(HomeAssistantError):
     """Error to indicate we cannot connect."""
 
 
-class InvalidAuth(exceptions.HomeAssistantError):
+class InvalidAuth(HomeAssistantError):
     """Error to indicate there is invalid auth."""
