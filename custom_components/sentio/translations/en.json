@@ -20,6 +20,18 @@
           "serial_port": "On Linux systems - Use link from /dev/serial/by_id/ for increased stability.",
           "heater_power": "Set nominal power of the heater. 0 to disable power calculation."
         }
+      },
+      "reconfigure": {
+        "data": {
+          "serial_port": "Serial port",
+          "heater_power": "Heater nominal power (kW)"
+        },
+        "title": "Connect to the device",
+        "description": "Enter the serial (RS485) port that connects to the Sentio controller.",
+        "data_description": {
+          "serial_port": "On Linux systems - Use link from /dev/serial/by_id/ for increased stability.",
+          "heater_power": "Set nominal power of the heater. 0 to disable power calculation."
+        }
       }
     }
   },

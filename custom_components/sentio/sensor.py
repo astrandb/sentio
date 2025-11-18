@@ -3,6 +3,7 @@
 import logging
 
 from homeassistant.components.sensor import (
+    RestoreSensor,
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
@@ -45,7 +46,7 @@ async def async_setup_entry(
         if entry.data.get(HEATER_POWER, 0) > 0:
             sensors.append(SentioSensor(hass, entry, heater_power_desc))
         if entry.data.get(HEATER_POWER, 0) > 0:
-            sensors.append(SentioSensor(hass, entry, heater_energy_desc))
+            sensors.append(SentioRestoreSensor(hass, entry, heater_energy_desc))
         return sensors
 
     async_add_entities(get_entities())
@@ -147,7 +148,7 @@ class SentioSensor(SensorEntity):
         self.heater_energy = 0
 
     @property
-    def native_value(self):
+    def native_value(self) -> float | int | None:
         """Return native value."""
         if self.entity_description.key == "preset_timer":
             return self._api.timer_val
@@ -168,17 +169,9 @@ class SentioSensor(SensorEntity):
                 and (self._api.heater_temperature < self._api.target_temperature)
                 else 0
             )
-        if self.entity_description.key == "heater_energy":
-            self.heater_energy += (
-                (self.entry.data.get(HEATER_POWER, 0) / 60.0)
-                if self._api.is_on
-                and (self._api.heater_temperature < self._api.target_temperature)
-                else 0
-            )
-            return self.heater_energy
         return None
 
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         """Register callbacks."""
         async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
 
@@ -187,3 +180,27 @@ class SentioSensor(SensorEntity):
         """Call update method."""
         _LOGGER.debug("%s update_callback state: %s", self.name, self._api.is_on)
         self.async_schedule_update_ha_state(True)
+
+
+class SentioRestoreSensor(SentioSensor, RestoreSensor):
+    """Class for Sentio sensors that restore state."""
+
+    @property
+    def native_value(self) -> float | None:
+        """Return native value."""
+        if self.entity_description.key == "heater_energy":
+            self.heater_energy += (
+                (self.entry.data.get(HEATER_POWER, 0) / 60.0)
+                if self._api.is_on
+                and (self._api.heater_temperature < self._api.target_temperature)
+                else 0.0
+            )
+            return self.heater_energy
+        return None
+
+    async def async_added_to_hass(self) -> None:
+        """Register callbacks."""
+        await super().async_added_to_hass()
+
+        if (last_sensor_data := await self.async_get_last_sensor_data()) is not None:
+            self._attr_native_value = last_sensor_data.native_value

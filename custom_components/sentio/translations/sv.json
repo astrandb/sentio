@@ -20,6 +20,18 @@
           "serial_port": "På Linux-system - Använd länk från /dev/serial/by_id/ för ökad stabilitet.",
           "heater_power": "Ange värmeaggregatets nominella effekt. 0 för att inaktivera effektberäkning."
         }
+      },
+      "reconfigure": {
+        "data": {
+          "serial_port": "Serieport",
+          "heater_power": "Värmeaggregatets nominella effekt (kW)"
+        },
+        "title": "Anslut till enheten",
+        "description": "Ange serieporten (RS485) som ansluter Sentio styrenhet.",
+        "data_description": {
+          "serial_port": "På Linux-system - Använd länk från /dev/serial/by_id/ för ökad stabilitet.",
+          "heater_power": "Ange värmeaggregatets nominella effekt. 0 för att inaktivera effektberäkning."
+        }
       }
     }
   },

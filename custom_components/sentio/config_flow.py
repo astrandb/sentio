@@ -77,7 +77,7 @@ async def validate_input(hass: HomeAssistant, data):
     return {"title": f"Sentio Pro {hub.type}"}
 
 
-class ConfigFlow(ConfigFlow, domain=DOMAIN):
+class SentioConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for sentio sauna."""
 
     VERSION = 3
@@ -110,7 +110,20 @@ class ConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: Mapping[str, Any] | None = None
     ) -> ConfigFlowResult:
         """User initiated reconfiguration."""
-        return await self.async_step_user(user_input)
+        entry = self._get_reconfigure_entry()
+        if user_input is not None:
+            return self.async_update_reload_and_abort(
+                entry,
+                data_updates=user_input,
+            )
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=self.add_suggested_values_to_schema(
+                data_schema=DATA_SCHEMA,
+                suggested_values=entry.data | (user_input or {}),
+            ),
+        )
 
 
 class CannotConnect(HomeAssistantError):
