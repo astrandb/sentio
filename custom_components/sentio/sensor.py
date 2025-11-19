@@ -45,7 +45,6 @@ async def async_setup_entry(
             sensors.append(SentioSensor(hass, entry, humidity_desc))
         if entry.data.get(HEATER_POWER, 0) > 0:
             sensors.append(SentioSensor(hass, entry, heater_power_desc))
-        if entry.data.get(HEATER_POWER, 0) > 0:
             sensors.append(SentioRestoreSensor(hass, entry, heater_energy_desc))
         return sensors
 
@@ -185,9 +184,22 @@ class SentioSensor(SensorEntity):
 class SentioRestoreSensor(SentioSensor, RestoreSensor):
     """Class for Sentio sensors that restore state."""
 
+    heater_energy = 0.0
+
     @property
     def native_value(self) -> float | None:
         """Return native value."""
+        return self._attr_native_value
+
+    async def async_added_to_hass(self) -> None:
+        """Register callbacks."""
+        await super().async_added_to_hass()
+        if (last_sensor_data := await self.async_get_last_sensor_data()) is not None:
+            self._attr_native_value = self.heater_energy = last_sensor_data.native_value
+
+    def _update_native_value(self) -> None:
+        """Update the native value attribute of the sensor."""
+        native_value = None
         if self.entity_description.key == "heater_energy":
             self.heater_energy += (
                 (self.entry.data.get(HEATER_POWER, 0) / 60.0)
@@ -195,12 +207,12 @@ class SentioRestoreSensor(SentioSensor, RestoreSensor):
                 and (self._api.heater_temperature < self._api.target_temperature)
                 else 0.0
             )
-            return self.heater_energy
-        return None
+            native_value = self.heater_energy
 
-    async def async_added_to_hass(self) -> None:
-        """Register callbacks."""
-        await super().async_added_to_hass()
+        self._attr_native_value = native_value
 
-        if (last_sensor_data := await self.async_get_last_sensor_data()) is not None:
-            self._attr_native_value = last_sensor_data.native_value
+    @callback
+    def _update_callback(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._update_native_value()
+        super()._update_callback()
