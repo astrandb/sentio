@@ -32,12 +32,16 @@
         "python.analysis.autoSearchPaths": false,
         "[python]": {
           "editor.defaultFormatter": "charliermarsh.ruff",
-          "editor.formatOnSave": true
+          "editor.formatOnSave": true,
+          "editor.formatOnType": true
         },
         "editor.formatOnPaste": false,
         "editor.formatOnSave": true,
         "editor.formatOnType": true,
         "files.trimTrailingWhitespace": true,
+        "[json][jsonc][yaml]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
         "[markdown]": {
           "files.trimTrailingWhitespace": false
         }
@@ -47,6 +51,6 @@
   "remoteUser": "vscode",
   "features": {
     "ghcr.io/devcontainers/features/rust:1": {},
-    "ghcr.io/devcontainers-contrib/features/ffmpeg-apt-get:1": {}
+    "ghcr.io/devcontainers-extra/features/ffmpeg-apt-get:1": {}
   }
 }

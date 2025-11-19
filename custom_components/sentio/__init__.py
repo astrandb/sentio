@@ -1,4 +1,5 @@
 """The sentio sauna integration."""
+
 from datetime import timedelta
 import logging
 
@@ -12,7 +13,14 @@ from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
 
-from .const import BAUD_RATE, DOMAIN, MANUFACTURER, SERIAL_PORT, SIGNAL_UPDATE_SENTIO
+from .const import (
+    BAUD_RATE,
+    DOMAIN,
+    MANUFACTURER,
+    SERIAL_PORT,
+    HEATER_POWER,
+    SIGNAL_UPDATE_SENTIO,
+)
 
 PLATFORMS = [
     Platform.LIGHT,
@@ -49,7 +57,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         identifiers={(DOMAIN, "4321")},
         manufacturer=MANUFACTURER,
         model=f"Pro {_api.type}",
-        name="Sauna",
+        translation_key="sauna",
         sw_version=_api.sw_version,
     )
     device_registry = dr.async_get(hass)
@@ -81,8 +89,15 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         data = {**config_entry.data}
         if "disable_fan" in data:
             data.pop("disable_fan")
-        config_entry.data = {**data}
-        config_entry.version = 2
+        hass.config_entries.async_update_entry(config_entry, data={**data})
+        hass.config_entries.async_update_entry(config_entry, version=2)
+
+    if config_entry.version == 2:
+        data = {**config_entry.data}
+        if HEATER_POWER not in data:
+            data[HEATER_POWER] = 0
+        hass.config_entries.async_update_entry(config_entry, data={**data})
+        hass.config_entries.async_update_entry(config_entry, version=3)
 
     _LOGGER.info("Migration to version %s successful", config_entry.version)
     return True

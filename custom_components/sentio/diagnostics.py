@@ -1,4 +1,5 @@
 """Diagnostics support for Sentio."""
+
 from __future__ import annotations
 
 from pysentio import SentioPro
