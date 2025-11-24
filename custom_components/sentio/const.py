@@ -5,6 +5,7 @@ VERSION = "2025.11.1"
 SIGNAL_UPDATE_SENTIO = "update_sentio"
 MANUFACTURER = "Sentiotec"
 DEVICE_NAME = "Sentio Pro Sauna Controller"
+UNIQUE_IDENTIFIER = "4321"
 
 SERIAL_PORT = "serial_port"
 HEATER_POWER = "heater_power"
