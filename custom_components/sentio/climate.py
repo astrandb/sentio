@@ -61,12 +61,12 @@ class SaunaClimate(SentioEntity, ClimateEntity):
         return min(MAX_SET_TEMP, int(self._api.config("max preset temp")))
 
     @property
-    def hvac_mode(self):
+    def hvac_mode(self) -> HVACMode:
         """Return hvac mode."""
         return self._api.hvac_mode
 
     @property
-    def hvac_action(self):
+    def hvac_action(self) -> HVACAction:
         """Return hvac action."""
         if self.hvac_mode == HVACMode.OFF:
             return HVACAction.OFF
