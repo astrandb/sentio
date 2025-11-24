@@ -6,12 +6,13 @@ from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
-from homeassistant.helpers.entity import DeviceInfo, EntityCategory
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.dispatcher import dispatcher_send
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
+from .const import SIGNAL_UPDATE_SENTIO
+from .entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,58 +30,39 @@ async def async_setup_entry(
     async_add_entities(get_entities())
 
 
-class SaunaOn(SwitchEntity):
+class SaunaOn(SentioEntity, SwitchEntity):
     """Representation of a switch."""
 
-    def __init__(self, hass, entry):
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry):
         """Initialize the sensor."""
-        self._entryid = entry.entry_id
+        super().__init__(SentioEntity)
         self._attr_unique_id = "sauna_switch"
-        self._attr_has_entity_name = True
-        self._attr_should_poll = False
         self._attr_translation_key = "heater"
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
         self._attr_icon = "mdi:radiator"
-        self._api = hass.data[DOMAIN][entry.entry_id]
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        _LOGGER.debug("%s update_callback state: %s", self.name, self._api.is_on)
-        self.async_schedule_update_ha_state(True)
 
     @property
-    def is_on(self):
+    def is_on(self) -> None:
         """Return state."""
         return self._api.is_on
 
-    async def async_turn_on(self, **kwargs):
+    async def async_turn_on(self, **kwargs) -> None:
         """Turn on the switch."""
         _LOGGER.debug("%s Turn_on", self.name)
         self._api.set_sauna(PYS_STATE_ON)
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
-    async def async_turn_off(self, **kwargs):
+    async def async_turn_off(self, **kwargs) -> None:
         """Turn off the switch."""
         _LOGGER.debug("%s Turn_off", self.name)
         self._api.set_sauna(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
-    async def async_update(self):
-        """Update."""
-        _LOGGER.debug("%s Switch async_update 1 %s", self.name, self._api.is_on)
-
 
 timer_desc = SwitchEntityDescription(
     key="preset_timer",
     entity_category=EntityCategory.DIAGNOSTIC,
-    has_entity_name=True,
     icon="mdi:progress-clock",
     translation_key="preset_timer",
 )
@@ -99,12 +81,9 @@ class TimerSwitch(SwitchEntity):
     ):
         """Init the TimerSwitch class."""
         self.entity_description = description
-        self._api = hass.data[DOMAIN][entry.entry_id]
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-        self._attr_unique_id = self.entity_description.key
 
     @property
-    def is_on(self):
+    def is_on(self) -> None:
         """Return the state."""
         if self.entity_description.key == "preset_timer":
             return self._api.timer_is_on
@@ -112,7 +91,7 @@ class TimerSwitch(SwitchEntity):
             return self._api.heattimer_is_on
         return None
 
-    async def async_turn_on(self, **kwargs):
+    async def async_turn_on(self, **kwargs) -> None:
         """Turn on the preset timer."""
         if self.entity_description.key == "preset_timer":
             self._api.set_timer(PYS_STATE_ON)
@@ -121,7 +100,7 @@ class TimerSwitch(SwitchEntity):
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
-    async def async_turn_off(self, **kwargs):
+    async def async_turn_off(self, **kwargs) -> None:
         """Turn off the preset timer."""
         if self.entity_description.key == "preset_timer":
             self._api.set_timer(PYS_STATE_OFF)
@@ -129,12 +108,3 @@ class TimerSwitch(SwitchEntity):
             self._api.set_heattimer(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        self.async_schedule_update_ha_state(True)

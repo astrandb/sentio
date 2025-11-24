@@ -7,12 +7,10 @@ from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
+from entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,40 +19,19 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ):
     """Set up entry."""
-
-    def get_fans() -> list[SaunaFan]:
-        entities = []
-        entities.append(SaunaFan(hass, entry))
-        return entities
-
-    async_add_entities(get_fans())
+    async_add_entities([SaunaFan(hass, entry)])
 
 
-class SaunaFan(FanEntity):
+class SaunaFan(SentioEntity, FanEntity):
     """Representation of a fan."""
 
-    def __init__(self, hass, entry):
-        """Initialize the sensor."""
-        self._entryid = entry.entry_id
-        self._api = hass.data[DOMAIN][entry.entry_id]
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+        """Initialize the fan."""
         self._attr_unique_id = "sauna_fan"
-        self._attr_has_entity_name = True
-        self._attr_should_poll = False
         self._attr_translation_key = "fan"
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        _LOGGER.debug("%s update_callback state: %s", self.name, self._api.fan)
-        self.async_schedule_update_ha_state(True)
 
     @property
-    def supported_features(self):
+    def supported_features(self) -> FanEntityFeature:
         """Return supported features."""
         feat = FanEntityFeature.TURN_OFF | FanEntityFeature.TURN_ON
         if self._api.config("fan dimming") == "on":
@@ -62,7 +39,7 @@ class SaunaFan(FanEntity):
         return feat
 
     @property
-    def is_on(self):
+    def is_on(self) -> bool:
         """Return state."""
         return self._api.fan
 
@@ -83,17 +60,13 @@ class SaunaFan(FanEntity):
         self._api.set_fan(PYS_STATE_ON)
         self.async_schedule_update_ha_state(True)
 
-    async def async_turn_off(self, **kwargs):
+    async def async_turn_off(self, **kwargs) -> None:
         """Turn off the fan."""
         _LOGGER.debug("%s Turn_off", self.name)
         self._api.set_fan(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)
 
     @property
-    def percentage(self):
+    def percentage(self) -> int | None:
         """Return percentage."""
         return self._api.fan_val
-
-    async def async_update(self):
-        """Update fan."""
-        return
