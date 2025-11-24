@@ -83,6 +83,11 @@
       "preset_timer": {
         "name": "Fördröjd start"
       }
+    },
+    "time": {
+      "delayed_start_time": {
+        "name": "Fördröjd start kl"
+      }
     }
   }
 }
