@@ -1,0 +1,12 @@
+{
+  "entity": {
+    "switch": {
+      "heater": {
+        "default": "mdi:radiator"
+      },
+      "preset_timer": {
+        "default": "mdi:progress-clock"
+      }
+    }
+  }
+}
