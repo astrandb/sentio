@@ -10,20 +10,22 @@ from homeassistant.components.climate import (
     HVACAction,
     HVACMode,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, PRECISION_WHOLE, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from . import SentioConfigEntry
 from .const import DOMAIN, MAX_SET_TEMP, MIN_SET_TEMP, SIGNAL_UPDATE_SENTIO
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    entry: SentioConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ):
     """Set up the climate entities."""
 
@@ -45,10 +47,9 @@ class SaunaClimate(ClimateEntity):
     _attr_target_temperature_step = 1.0
     _enable_turn_on_off_backwards_compatibility = False
 
-    def __init__(self, hass, entry):
+    def __init__(self, hass: HomeAssistant, entry: SentioConfigEntry):
         """Initialize the device."""
-        self._entryid = entry.entry_id
-        self._api = hass.data[DOMAIN][entry.entry_id]
+        self._api = entry.runtime_data.client
         self._attr_unique_id = "sauna_climate"
         self._attr_has_entity_name = True
         self._attr_should_poll = False
