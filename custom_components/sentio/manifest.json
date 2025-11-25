@@ -13,7 +13,7 @@
     "pysentio"
   ],
   "requirements": [
-    "pysentio==0.0.52"
+    "pysentio==0.0.54b2"
   ],
   "version": "2025.11.1"
 }

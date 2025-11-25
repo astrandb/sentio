@@ -85,7 +85,7 @@
       }
     },
     "time": {
-      "delayed_start_time": {
+      "preset_time": {
         "name": "Delayed start time"
       }
     }
