@@ -17,9 +17,9 @@ from homeassistant.helpers.event import async_track_time_interval
 from .const import (
     BAUD_RATE,
     DOMAIN,
+    HEATER_POWER,
     MANUFACTURER,
     SERIAL_PORT,
-    HEATER_POWER,
     SIGNAL_UPDATE_SENTIO,
 )
 
@@ -41,6 +41,8 @@ type SentioConfigEntry = ConfigEntry[SentioData]
 
 @dataclass
 class SentioData:
+    """Class for config entry data."""
+
     client: SentioPro
 
 
