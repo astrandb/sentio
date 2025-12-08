@@ -21,6 +21,7 @@ from .const import (
     MANUFACTURER,
     SERIAL_PORT,
     SIGNAL_UPDATE_SENTIO,
+    UNIQUE_IDENTIFIER,
 )
 
 PLATFORMS = [
@@ -63,7 +64,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: SentioConfigEntry):
     _LOGGER.info("SW_version: %s, Type: %s", _api.sw_version, _api.type)
     device_info = DeviceInfo(
         config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, "4321")},
+        identifiers={(DOMAIN, UNIQUE_IDENTIFIER)},
         manufacturer=MANUFACTURER,
         model=f"Pro {_api.type}",
         translation_key="sauna",

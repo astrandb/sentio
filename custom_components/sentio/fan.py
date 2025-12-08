@@ -5,16 +5,24 @@ from typing import Any
 
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
-from homeassistant.components.fan import FanEntity, FanEntityFeature
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.components.fan import (
+    FanEntity,
+    FanEntityDescription,
+    FanEntityFeature,
+)
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import SentioConfigEntry
-from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
+from .entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
+
+
+FAN_DESCR = FanEntityDescription(
+    key="sauna_fan",
+    translation_key="fan",
+)
 
 
 async def async_setup_entry(
@@ -26,33 +34,24 @@ async def async_setup_entry(
 
     def get_fans() -> list[SaunaFan]:
         entities = []
-        entities.append(SaunaFan(hass, entry))
+        entities.append(SaunaFan(hass, entry, FAN_DESCR))
         return entities
 
     async_add_entities(get_fans())
 
 
-class SaunaFan(FanEntity):
+class SaunaFan(SentioEntity, FanEntity):
     """Representation of a fan."""
 
-    def __init__(self, hass: HomeAssistant, entry: SentioConfigEntry):
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        entry: SentioConfigEntry,
+        description: FanEntityDescription,
+    ):
         """Initialize the sensor."""
-        self._api = entry.runtime_data.client
-        self._attr_unique_id = "sauna_fan"
-        self._attr_has_entity_name = True
-        self._attr_should_poll = False
-        self._attr_translation_key = "fan"
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
 
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        _LOGGER.debug("%s update_callback state: %s", self.name, self._api.fan)
-        self.async_schedule_update_ha_state(True)
+        super().__init__(hass, entry, description)
 
     @property
     def supported_features(self):
@@ -94,7 +93,3 @@ class SaunaFan(FanEntity):
     def percentage(self):
         """Return percentage."""
         return self._api.fan_val
-
-    async def async_update(self):
-        """Update fan."""
-        return

@@ -11,13 +11,13 @@ from homeassistant.components.humidifier import (
     HumidifierEntityFeature,
 )
 from homeassistant.components.humidifier.const import MODE_NORMAL
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import SentioConfigEntry
-from .const import DOMAIN, HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
+from .const import HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
+from .entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ vaporizer_desc = HumidifierEntityDescription(
 )
 
 
-class SaunaHumidifier(HumidifierEntity):
+class SaunaHumidifier(SentioEntity, HumidifierEntity):
     """Humidifier entity class."""
 
     entity_description = HumidifierEntityDescription
@@ -57,25 +57,10 @@ class SaunaHumidifier(HumidifierEntity):
         entry: SentioConfigEntry,
         description: HumidifierEntityDescription,
     ):
-        """Initialize the device."""
-        self.entity_description = description
-        self._api = entry.runtime_data.client
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-        self._attr_unique_id = self.entity_description.key
-        self._attr_has_entity_name = True
-        self._attr_should_poll = False
-
+        """Initialize the humidifier."""
+        super().__init__(hass, entry, description)
         self._attr_supported_modes = HumidifierEntityFeature.MODES
         self._attr_mode = MODE_NORMAL
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        self.async_schedule_update_ha_state(True)
 
     @property
     def is_on(self):
@@ -107,3 +92,5 @@ class SaunaHumidifier(HumidifierEntity):
     async def async_set_humidity(self, humidity):
         """Set new target humidity."""
         self._api.set_steam_val(int(humidity))
+        await self.async_update_ha_state(True)
+        dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)

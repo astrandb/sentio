@@ -12,17 +12,17 @@ from homeassistant.components.sensor import (
 from homeassistant.const import (
     PERCENTAGE,
     UnitOfEnergy,
+    UnitOfPower,
     UnitOfTemperature,
     UnitOfTime,
-    UnitOfPower,
 )
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import DeviceInfo, EntityCategory
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import SentioConfigEntry
-from .const import DOMAIN, HEATER_POWER, HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
+from .const import HEATER_POWER, HUMIDITY_MODELS
+from .entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -127,7 +127,7 @@ heater_energy_desc = SensorEntityDescription(
 )
 
 
-class SentioSensor(SensorEntity):
+class SentioSensor(SentioEntity, SensorEntity):
     """Class for Sentio sensors."""
 
     entity_description: SensorEntityDescription
@@ -137,15 +137,11 @@ class SentioSensor(SensorEntity):
         hass: HomeAssistant,
         entry: SentioConfigEntry,
         description: SensorEntityDescription,
-    ):
+    ) -> None:
         """Init the SentioSensor class."""
 
+        super().__init__(hass, entry, description)
         self.entry = entry
-        self.entity_description = description
-        self._attr_should_poll = False
-        self._api = entry.runtime_data.client
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-        self._attr_unique_id = self.entity_description.key
         self.heater_energy = 0
 
     @property
@@ -171,16 +167,6 @@ class SentioSensor(SensorEntity):
                 else 0
             )
         return None
-
-    async def async_added_to_hass(self) -> None:
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        _LOGGER.debug("%s update_callback state: %s", self.name, self._api.is_on)
-        self.async_schedule_update_ha_state(True)
 
 
 class SentioRestoreSensor(SentioSensor, RestoreSensor):

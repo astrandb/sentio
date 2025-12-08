@@ -1,7 +1,5 @@
 """Diagnostics support for Sentio."""
 
-from __future__ import annotations
-
 from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
@@ -34,9 +32,7 @@ async def async_get_config_entry_diagnostics(
         "config": config_dict,
     }
 
-    diagnostics_data = {
+    return {
         "setup": async_redact_data(config_entry.data, TO_REDACT),
         "info": async_redact_data(config_data, TO_REDACT),
     }
-
-    return diagnostics_data
