@@ -1,16 +1,16 @@
 """Config flow for sentio sauna integration."""
 
-import logging
 from collections.abc import Mapping
+import logging
 from typing import Any
 
 from pysentio import SentioPro
 import voluptuous as vol
 
 from homeassistant.config_entries import (
+    CONN_CLASS_LOCAL_POLL,
     ConfigFlow,
     ConfigFlowResult,
-    CONN_CLASS_LOCAL_POLL,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError

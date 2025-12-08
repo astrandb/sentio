@@ -12,9 +12,9 @@ from homeassistant.components.sensor import (
 from homeassistant.const import (
     PERCENTAGE,
     UnitOfEnergy,
+    UnitOfPower,
     UnitOfTemperature,
     UnitOfTime,
-    UnitOfPower,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -147,6 +147,7 @@ class SentioSensor(SensorEntity):
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
         self._attr_unique_id = self.entity_description.key
         self.heater_energy = 0
+        self._attr_native_value = 0
 
     @property
     def native_value(self) -> float | int | None:
