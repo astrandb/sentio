@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.x"
 
@@ -33,7 +33,7 @@ jobs:
           cd ${{ github.workspace }}/custom_components/sentio
           zip sentio.zip -r ./
       - name: Upload zip to release
-        uses: svenstaro/upload-release-action@2.9.0
+        uses: svenstaro/upload-release-action@2.11.3
 
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}

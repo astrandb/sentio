@@ -11,24 +11,26 @@ from homeassistant.components.humidifier import (
     HumidifierEntityFeature,
 )
 from homeassistant.components.humidifier.const import MODE_NORMAL
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
+from . import SentioConfigEntry
+from .const import HUMIDITY_MODELS, SIGNAL_UPDATE_SENTIO
 from .entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    entry: SentioConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ):
     """Set up the humidifier entities."""
 
     def get_humidifiers() -> list[SaunaHumidifier]:
-        api = hass.data[DOMAIN][entry.entry_id]
+        api = entry.runtime_data.client
         entities: list[SaunaHumidifier] = []
         if api.type.upper() in HUMIDITY_MODELS:
             entities.append(SaunaHumidifier(hass, entry, vaporizer_desc))
@@ -52,13 +54,13 @@ class SaunaHumidifier(SentioEntity, HumidifierEntity):
     def __init__(
         self,
         hass: HomeAssistant,
-        entry: ConfigEntry,
+        entry: SentioConfigEntry,
         description: HumidifierEntityDescription,
     ):
         """Initialize the device."""
         super().__init__(SentioEntity)
         self.entity_description = description
-        # self._attr_unique_id = self.entity_description.key
+        self._attr_unique_id = self.entity_description.key
 
         self._attr_supported_modes = HumidifierEntityFeature.MODES
         self._attr_mode = MODE_NORMAL

@@ -2,11 +2,11 @@
 
 import logging
 
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo, Entity, EntityDescription
 
+from . import SentioConfigEntry
 from .const import DOMAIN, SIGNAL_UPDATE_SENTIO, UNIQUE_IDENTIFIER
 
 _LOGGER = logging.getLogger(__name__)
@@ -18,13 +18,15 @@ class SentioEntity(Entity):
     def __init__(
         self,
         hass: HomeAssistant,
-        entry: ConfigEntry,
-        entity_description: EntityDescription,
+        entry: SentioConfigEntry,
+        entity_description: EntityDescription | None = None,
     ):
         """Initialize the base entity."""
         self.entity_description = entity_description
-        self._api = hass.data[DOMAIN][entry.entry_id]
-        self._attr_unique_id = self.entity_description.key
+        self._api = entry.runtime_data.client
+        self._attr_unique_id = (
+            self.entity_description.key if self.entity_description is not None else None
+        )
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, UNIQUE_IDENTIFIER)})
         self._attr_should_poll = False
         self._attr_has_entity_name = True

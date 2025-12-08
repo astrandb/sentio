@@ -6,17 +6,19 @@ from typing import Any
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.fan import FanEntity, FanEntityFeature
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from entity import SentioEntity
+from . import SentioConfigEntry
+from .entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    entry: SentioConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ):
     """Set up entry."""
     async_add_entities([SaunaFan(hass, entry)])
@@ -25,8 +27,9 @@ async def async_setup_entry(
 class SaunaFan(SentioEntity, FanEntity):
     """Representation of a fan."""
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
-        """Initialize the fan."""
+    def __init__(self, hass: HomeAssistant, entry: SentioConfigEntry):
+        """Initialize the fan entity."""
+        super().__init__(SentioEntity)
         self._attr_unique_id = "sauna_fan"
         self._attr_translation_key = "fan"
 

@@ -9,43 +9,41 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     PERCENTAGE,
     UnitOfEnergy,
+    UnitOfPower,
     UnitOfTemperature,
     UnitOfTime,
-    UnitOfPower,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import (
-    DOMAIN,
-    HEATER_POWER,
-    HUMIDITY_MODELS,
-)
+from . import SentioConfigEntry
+from .const import HEATER_POWER, HUMIDITY_MODELS
 from .entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    entry: SentioConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ):
     """Set up the sensor entities."""
 
     def get_entities() -> list[SentioSensor]:
-        api = hass.data[DOMAIN][entry.entry_id]
+        _api = entry.runtime_data.client
         sensors = [SentioSensor(hass, entry, heater_temp_desc)]
         sensors.append(SentioSensor(hass, entry, timer_desc))
         sensors.append(SentioSensor(hass, entry, heat_timer_desc))
-        if api.config("sens bench") == "on":
+        if _api.config("sens bench") == "on":
             sensors.append(SentioSensor(hass, entry, bench_temp_desc))
-        if api.config("sens foil") == "on":
+        if _api.config("sens foil") == "on":
             sensors.append(SentioSensor(hass, entry, foil_temp_desc))
-        if api.type.upper() in HUMIDITY_MODELS:
+        if _api.type.upper() in HUMIDITY_MODELS:
             sensors.append(SentioSensor(hass, entry, humidity_desc))
         if entry.data.get(HEATER_POWER, 0) > 0:
             sensors.append(SentioSensor(hass, entry, heater_power_desc))
@@ -137,11 +135,15 @@ class SentioSensor(SentioEntity, SensorEntity):
     def __init__(
         self,
         hass: HomeAssistant,
-        entry: ConfigEntry,
+        entry: SentioConfigEntry,
         description: SensorEntityDescription,
     ):
         """Init the SentioSensor class."""
         super().__init__(SentioEntity)
+
+        self.entry = entry
+        self.entity_description = description
+        self._attr_unique_id = self.entity_description.key
         self.heater_energy = 0
 
     @property

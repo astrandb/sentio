@@ -2,14 +2,11 @@
 
 from __future__ import annotations
 
-from pysentio import SentioPro
-
 from homeassistant.components.diagnostics import async_redact_data
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN
+from . import SentioConfigEntry
 
 TO_REDACT = {
     CONF_PASSWORD,
@@ -18,11 +15,11 @@ TO_REDACT = {
 
 
 async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, config_entry: ConfigEntry
+    hass: HomeAssistant, config_entry: SentioConfigEntry
 ) -> dict:
     """Return diagnostics for a config entry."""
 
-    _api: SentioPro = hass.data[DOMAIN][config_entry.entry_id]
+    _api = config_entry.runtime_data.client
 
     config_dict = {}
     for line in _api.config_raw.lower().splitlines():

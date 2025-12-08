@@ -1,5 +1,6 @@
 """The sentio sauna integration."""
 
+from dataclasses import dataclass
 from datetime import timedelta
 import logging
 
@@ -16,9 +17,9 @@ from homeassistant.helpers.event import async_track_time_interval
 from .const import (
     BAUD_RATE,
     DOMAIN,
+    HEATER_POWER,
     MANUFACTURER,
     SERIAL_PORT,
-    HEATER_POWER,
     SIGNAL_UPDATE_SENTIO,
     UNIQUE_IDENTIFIER,
 )
@@ -36,8 +37,17 @@ SCAN_INTERVAL = timedelta(seconds=60)
 
 _LOGGER = logging.getLogger(__name__)
 
+type SentioConfigEntry = ConfigEntry[SentioData]
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+
+@dataclass
+class SentioData:
+    """Class for config entry data."""
+
+    client: SentioPro
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: SentioConfigEntry):
     """Set up sentio sauna from a config entry."""
 
     def poll_update(event_time):
@@ -46,11 +56,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.debug("Calling dispatcher_send")
         dispatcher_send(hass, SIGNAL_UPDATE_SENTIO)
 
-    hass.data[DOMAIN] = {}
-    hass.data[DOMAIN][entry.entry_id] = SentioPro(
-        entry.data.get(SERIAL_PORT), BAUD_RATE
-    )
-    _api = hass.data[DOMAIN][entry.entry_id]
+    client = SentioPro(entry.data.get(SERIAL_PORT), BAUD_RATE)
+    entry.runtime_data = SentioData(client)
+
+    _api = entry.runtime_data.client
     _api.get_config()
     _LOGGER.info("SW_version: %s, Type: %s", _api.sw_version, _api.type)
     device_info = DeviceInfo(
@@ -74,15 +83,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
-    """Unload a config entry."""
-    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        hass.data[DOMAIN].pop(entry.entry_id)
-
-    return unload_ok
+async def async_unload_entry(hass: HomeAssistant, entry: SentioConfigEntry):
+    """Unload the config entry."""
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 
-async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_migrate_entry(hass: HomeAssistant, config_entry: SentioConfigEntry):
     """Migrate old entry."""
     _LOGGER.info("Migrating from version %s", config_entry.version)
 

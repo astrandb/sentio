@@ -1,0 +1,20 @@
+{
+  "entity": {
+    "sensor": {
+      "heater_timer": {
+        "default": "mdi:clock-end"
+      },
+      "preset_timer": {
+        "default": "mdi:clock-start"
+      }
+    },
+    "switch": {
+      "heater": {
+        "default": "mdi:radiator"
+      },
+      "preset_timer": {
+        "default": "mdi:progress-clock"
+      }
+    }
+  }
+}

@@ -6,16 +6,18 @@ from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEntity
 from homeassistant.core import HomeAssistant
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from . import SentioConfigEntry
 from .entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    entry: SentioConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ):
     """Set up the entry."""
     async_add_entities([SaunaLight(hass, entry)])
@@ -24,9 +26,8 @@ async def async_setup_entry(
 class SaunaLight(SentioEntity, LightEntity):
     """Representation of a light."""
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+    def __init__(self, hass: HomeAssistant, entry: SentioConfigEntry):
         """Initialize the light entity."""
-
         super().__init__(SentioEntity)
         self._attr_unique_id = "sauna_light"
         self._attr_translation_key = "light"

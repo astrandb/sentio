@@ -5,12 +5,12 @@ import logging
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from . import SentioConfigEntry
 from .const import SIGNAL_UPDATE_SENTIO
 from .entity import SentioEntity
 
@@ -18,7 +18,9 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    entry: SentioConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ):
     """Set up the switches."""
 
@@ -33,12 +35,11 @@ async def async_setup_entry(
 class SaunaOn(SentioEntity, SwitchEntity):
     """Representation of a switch."""
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry):
+    def __init__(self, hass: HomeAssistant, entry: SentioConfigEntry):
         """Initialize the sensor."""
         super().__init__(SentioEntity)
         self._attr_unique_id = "sauna_switch"
         self._attr_translation_key = "heater"
-        self._attr_icon = "mdi:radiator"
 
     @property
     def is_on(self) -> None:
@@ -63,7 +64,7 @@ class SaunaOn(SentioEntity, SwitchEntity):
 timer_desc = SwitchEntityDescription(
     key="preset_timer",
     entity_category=EntityCategory.DIAGNOSTIC,
-    icon="mdi:progress-clock",
+    has_entity_name=True,
     translation_key="preset_timer",
 )
 
@@ -76,11 +77,11 @@ class TimerSwitch(SwitchEntity):
     def __init__(
         self,
         hass: HomeAssistant,
-        entry: ConfigEntry,
+        entry: SentioConfigEntry,
         description: SwitchEntityDescription,
     ):
         """Init the TimerSwitch class."""
-        self.entity_description = description
+        self._attr_unique_id = self.entity_description.key
 
     @property
     def is_on(self) -> None:
