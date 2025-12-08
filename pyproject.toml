@@ -191,7 +191,7 @@ disable = [
     "protected-access",                  # SLF001
     "broad-exception-raised",            # TRY002
     "consider-using-f-string",           # PLC0209
-    "magic-value-comparison",            # PLR2004
+    # "magic-value-comparison",            # PLR2004
     # "no-self-use", # PLR6301  # Optional plugin, not enabled
 
     # Handled by mypy
