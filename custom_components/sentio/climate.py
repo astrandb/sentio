@@ -6,36 +6,42 @@ from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.climate import (
     ClimateEntity,
+    ClimateEntityDescription,
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
 )
 from homeassistant.const import ATTR_TEMPERATURE, PRECISION_WHOLE, UnitOfTemperature
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import SentioConfigEntry
-from .const import DOMAIN, MAX_SET_TEMP, MIN_SET_TEMP, SIGNAL_UPDATE_SENTIO
+from .const import MAX_SET_TEMP, MIN_SET_TEMP, SIGNAL_UPDATE_SENTIO
+from .entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
+
+CLIMATE_DESCR = ClimateEntityDescription(
+    key="sauna_climate",
+    name=None,
+)
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: SentioConfigEntry,
     async_add_entities: AddEntitiesCallback,
-):
+) -> None:
     """Set up the climate entities."""
 
     def get_climates() -> list[SaunaClimate]:
-        return [SaunaClimate(hass, entry)]
+        return [SaunaClimate(hass, entry, CLIMATE_DESCR)]
 
     async_add_entities(get_climates())
 
 
-class SaunaClimate(ClimateEntity):
+class SaunaClimate(SentioEntity, ClimateEntity):
     """Climate entity class."""
 
     _attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT]
@@ -46,29 +52,9 @@ class SaunaClimate(ClimateEntity):
     )
     _attr_target_temperature_step = 1.0
     _enable_turn_on_off_backwards_compatibility = False
-
-    def __init__(self, hass: HomeAssistant, entry: SentioConfigEntry):
-        """Initialize the device."""
-        self._api = entry.runtime_data.client
-        self._attr_unique_id = "sauna_climate"
-        self._attr_has_entity_name = True
-        self._attr_should_poll = False
-        self._attr_name = None
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-
-        self._attr_temperature_unit = UnitOfTemperature.CELSIUS
-        self._attr_min_temp = MIN_SET_TEMP
-        self._attr_precision = PRECISION_WHOLE
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        _LOGGER.debug("Sauna climate update_callback state: %s", self._api.hvac_mode)
-        self.async_schedule_update_ha_state(True)
+    _attr_temperature_unit = UnitOfTemperature.CELSIUS
+    _attr_min_temp = MIN_SET_TEMP
+    _attr_precision = PRECISION_WHOLE
 
     @property
     def max_temp(self):
@@ -114,7 +100,3 @@ class SaunaClimate(ClimateEntity):
         temp = kwargs.get(ATTR_TEMPERATURE)
         self._api.set_sauna_val(int(temp))
         _LOGGER.debug("Sauna New target temp => %s", temp)
-
-    async def async_update(self):
-        """Update climate entity."""
-        _LOGGER.debug("Sauna climate async_update 1 %s", self._api.hvac_mode)

@@ -5,15 +5,22 @@ import logging
 from pysentio import PYS_STATE_OFF, PYS_STATE_ON
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
-from homeassistant.helpers.entity import DeviceInfo, EntityCategory
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.dispatcher import dispatcher_send
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import SentioConfigEntry
-from .const import DOMAIN, SIGNAL_UPDATE_SENTIO
+from .const import SIGNAL_UPDATE_SENTIO
+from .entity import SentioEntity
 
 _LOGGER = logging.getLogger(__name__)
+
+
+SWITCH_DESC = SwitchEntityDescription(
+    key="sauna_switch",
+    translation_key="heater",
+)
 
 
 async def async_setup_entry(
@@ -24,34 +31,17 @@ async def async_setup_entry(
     """Set up the switches."""
 
     def get_entities() -> list[SwitchEntity]:
-        entities = [SaunaOn(hass, entry)]
+        entities = [SaunaOn(hass, entry, SWITCH_DESC)]
         entities.append(TimerSwitch(hass, entry, timer_desc))
         return entities
 
     async_add_entities(get_entities())
 
 
-class SaunaOn(SwitchEntity):
+class SaunaOn(SentioEntity, SwitchEntity):
     """Representation of a switch."""
 
-    def __init__(self, hass: HomeAssistant, entry: SentioConfigEntry):
-        """Initialize the sensor."""
-        self._attr_unique_id = "sauna_switch"
-        self._attr_has_entity_name = True
-        self._attr_should_poll = False
-        self._attr_translation_key = "heater"
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-        self._api = entry.runtime_data.client
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        _LOGGER.debug("%s update_callback state: %s", self.name, self._api.is_on)
-        self.async_schedule_update_ha_state(True)
+    entity_description: SwitchEntityDescription
 
     @property
     def is_on(self):
@@ -72,10 +62,6 @@ class SaunaOn(SwitchEntity):
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
 
-    async def async_update(self):
-        """Update."""
-        _LOGGER.debug("%s Switch async_update 1 %s", self.name, self._api.is_on)
-
 
 timer_desc = SwitchEntityDescription(
     key="preset_timer",
@@ -85,22 +71,10 @@ timer_desc = SwitchEntityDescription(
 )
 
 
-class TimerSwitch(SwitchEntity):
+class TimerSwitch(SentioEntity, SwitchEntity):
     """Representation of a timer switch."""
 
     entity_description: SwitchEntityDescription
-
-    def __init__(
-        self,
-        hass: HomeAssistant,
-        entry: SentioConfigEntry,
-        description: SwitchEntityDescription,
-    ):
-        """Init the TimerSwitch class."""
-        self.entity_description = description
-        self._api = entry.runtime_data.client
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "4321")})
-        self._attr_unique_id = self.entity_description.key
 
     @property
     def is_on(self):
@@ -128,12 +102,3 @@ class TimerSwitch(SwitchEntity):
             self._api.set_heattimer(PYS_STATE_OFF)
         self.async_schedule_update_ha_state(True)
         dispatcher_send(self.hass, SIGNAL_UPDATE_SENTIO)
-
-    async def async_added_to_hass(self):
-        """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_SENTIO, self._update_callback)
-
-    @callback
-    def _update_callback(self):
-        """Call update method."""
-        self.async_schedule_update_ha_state(True)
