@@ -1,7 +1,7 @@
 """Constants for the sentio sauna integration."""
 
 DOMAIN = "sentio"
-VERSION = "2025.11.1"
+VERSION = "2025.12.0b0"
 SIGNAL_UPDATE_SENTIO = "update_sentio"
 MANUFACTURER = "Sentiotec"
 DEVICE_NAME = "Sentio Pro Sauna Controller"
