@@ -31,6 +31,7 @@ PLATFORMS = [
     Platform.FAN,
     Platform.CLIMATE,
     Platform.HUMIDIFIER,
+    Platform.TIME,
 ]
 
 SCAN_INTERVAL = timedelta(seconds=60)
