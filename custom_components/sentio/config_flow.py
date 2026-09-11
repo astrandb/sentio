@@ -17,12 +17,11 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.selector import (
     NumberSelector,
     NumberSelectorConfig,
-    TextSelector,
+    SerialPortSelector,
 )
 
 from .const import (  # pylint:disable=unused-import
     BAUD_RATE,
-    DEFAULT_SERIAL_PORT,
     DOMAIN,
     HEATER_POWER,
     SERIAL_PORT,
@@ -32,7 +31,7 @@ _LOGGER = logging.getLogger(__name__)
 
 DATA_SCHEMA = vol.Schema(
     {
-        vol.Required(SERIAL_PORT, default=DEFAULT_SERIAL_PORT): TextSelector(),
+        vol.Required(SERIAL_PORT): SerialPortSelector(),
         vol.Required(HEATER_POWER, default=0): NumberSelector(
             NumberSelectorConfig(min=0, max=30, step=0.1)
         ),
