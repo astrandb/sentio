@@ -83,6 +83,11 @@
       "preset_timer": {
         "name": "Preset timer"
       }
+    },
+    "time": {
+      "preset_time": {
+        "name": "Delayed start time"
+      }
     }
   }
 }
