@@ -10,8 +10,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.dispatcher import dispatcher_send
-from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
 
 from .const import (
@@ -63,7 +63,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: SentioConfigEntry):
     await hass.async_add_executor_job(_api.get_config)
     _LOGGER.info("SW_version: %s, Type: %s", _api.sw_version, _api.type)
     device_info = DeviceInfo(
-        config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, UNIQUE_IDENTIFIER)},
         manufacturer=MANUFACTURER,
         model=f"Pro {_api.type}",
@@ -71,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: SentioConfigEntry):
         sw_version=_api.sw_version,
     )
     device_registry = dr.async_get(hass)
-    device_registry.async_get_or_create(**device_info)
+    device_registry.async_get_or_create(config_entry_id=entry.entry_id, **device_info)
 
     # Get initial states and data from API
     _api.update()
