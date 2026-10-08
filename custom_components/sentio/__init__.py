@@ -63,7 +63,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: SentioConfigEntry):
     await hass.async_add_executor_job(_api.get_config)
     _LOGGER.info("SW_version: %s, Type: %s", _api.sw_version, _api.type)
     device_info = DeviceInfo(
-        # config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, UNIQUE_IDENTIFIER)},
         manufacturer=MANUFACTURER,
         model=f"Pro {_api.type}",
