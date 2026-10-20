@@ -1,37 +1,50 @@
 name-template: "Example title - v$NEXT_PATCH_VERSION"
 tag-template: "v$NEXT_PATCH_VERSION"
-exclude-labels:
-  - "skip-changelog"
+
 categories:
+  - type: "pre-exclude"
+    when:
+      label: "skip-changelog"
+
   - title: "New Features"
-    labels:
-      - "feature"
-      - "enhancement"
+    when:
+      labels:
+        - "feature"
+        - "enhancement"
   - title: "Breaking changes"
-    labels:
-      - "breaking"
+    when:
+      labels:
+        - "breaking"
   - title: "Bug fixes"
-    labels:
-      - "fix"
-      - "bugfix"
-      - "bug"
+    when:
+      labels:
+        - "fix"
+        - "bugfix"
+        - "bug"
   - title: "Translation"
+    when:
+      labels:
+        - "translation"
     collapse-after: 2
-    labels:
-      - "translation"
   - title: "Dependencies"
     collapse-after: 2
-    labels:
-      - "dependencies"
-      - "dependency"
+    when:
+      labels:
+        - "dependencies"
+        - "dependency"
   - title: "Maintenance"
-    label: "maintenance"
+    when:
+      labels:
+        - "maintenance"
   - title: "Code quality and optimizations"
-    label: "code quality"
+    when:
+      labels:
+        - "code quality"
   - title: "Development tools"
-    labels:
-      - "development tools"
-      - "dev-tools"
+    when:
+      labels:
+        - "development tools"
+        - "dev-tools"
 
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
