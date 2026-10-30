@@ -1,6 +1,9 @@
 {
   "domain": "sentio",
   "name": "Sentio sauna",
+  "categories": [
+    "climate.thermostats_heating"
+  ],
   "codeowners": [
     "@astrandb"
   ],
