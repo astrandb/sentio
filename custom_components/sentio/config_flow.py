@@ -4,8 +4,8 @@ from collections.abc import Mapping
 import logging
 from typing import Any
 
+import probatio
 from pysentio import SentioPro
-import voluptuous as vol
 
 from homeassistant.config_entries import (
     CONN_CLASS_LOCAL_POLL,
@@ -20,19 +20,14 @@ from homeassistant.helpers.selector import (
     SerialPortSelector,
 )
 
-from .const import (  # pylint:disable=unused-import
-    BAUD_RATE,
-    DOMAIN,
-    HEATER_POWER,
-    SERIAL_PORT,
-)
+from .const import BAUD_RATE, DOMAIN, HEATER_POWER, SERIAL_PORT
 
 _LOGGER = logging.getLogger(__name__)
 
-DATA_SCHEMA = vol.Schema(
+DATA_SCHEMA = probatio.Schema(
     {
-        vol.Required(SERIAL_PORT): SerialPortSelector(),
-        vol.Required(HEATER_POWER, default=0): NumberSelector(
+        probatio.Required(SERIAL_PORT): SerialPortSelector(),
+        probatio.Required(HEATER_POWER, default=0): NumberSelector(
             NumberSelectorConfig(min=0, max=30, step=0.1)
         ),
     }
