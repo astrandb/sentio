@@ -3,8 +3,9 @@
 import logging
 
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import DeviceInfo, Entity, EntityDescription
+from homeassistant.helpers.entity import Entity, EntityDescription
 
 from . import SentioConfigEntry
 from .const import DOMAIN, SIGNAL_UPDATE_SENTIO, UNIQUE_IDENTIFIER
