@@ -71,6 +71,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: SentioConfigEntry):
     )
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(config_entry_id=entry.entry_id, **device_info)
+    # device_registry.async_get_or_create_from_info(
+    #     config_entry_id=entry.entry_id, device_info=device_info
+    # )
 
     # Get initial states and data from API
     _api.update()
