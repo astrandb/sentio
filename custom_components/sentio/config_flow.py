@@ -7,11 +7,7 @@ from typing import Any
 import probatio
 from pysentio import SentioPro
 
-from homeassistant.config_entries import (
-    CONN_CLASS_LOCAL_POLL,
-    ConfigFlow,
-    ConfigFlowResult,
-)
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.selector import (
@@ -75,7 +71,6 @@ class SentioConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for sentio sauna."""
 
     VERSION = 3
-    CONNECTION_CLASS = CONN_CLASS_LOCAL_POLL
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""

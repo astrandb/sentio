@@ -50,14 +50,14 @@ class SaunaClimate(SentioEntity, ClimateEntity):
         | ClimateEntityFeature.TURN_OFF
         | ClimateEntityFeature.TURN_ON
     )
-    _attr_target_temperature_step = 1.0
+    _attr_native_target_temperature_step = 1.0
     _enable_turn_on_off_backwards_compatibility = False
-    _attr_temperature_unit = UnitOfTemperature.CELSIUS
+    _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_min_temp = MIN_SET_TEMP
     _attr_precision = PRECISION_WHOLE
 
     @property
-    def max_temp(self):
+    def max_temp(self) -> float:
         """Return max set temp."""
         return min(MAX_SET_TEMP, int(self._api.config("max preset temp")))
 
@@ -67,21 +67,21 @@ class SaunaClimate(SentioEntity, ClimateEntity):
         return self._api.hvac_mode
 
     @property
-    def hvac_action(self):
+    def hvac_action(self) -> HVACAction | None:
         """Return hvac action."""
         if self.hvac_mode == HVACMode.OFF:
             return HVACAction.OFF
-        if self.current_temperature < self.target_temperature:
+        if self.native_current_temperature < self.native_target_temperature:
             return HVACAction.HEATING
         return HVACAction.IDLE
 
     @property
-    def current_temperature(self):
+    def native_current_temperature(self) -> float | None:
         """Return current temperature."""
         return self._api.bench_temperature
 
     @property
-    def target_temperature(self):
+    def native_target_temperature(self) -> float | None:
         """Return target temperature."""
         return self._api.target_temperature
 
@@ -97,6 +97,6 @@ class SaunaClimate(SentioEntity, ClimateEntity):
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
-        temp = kwargs.get(ATTR_TEMPERATURE)
+        temp = kwargs[ATTR_TEMPERATURE]
         self._api.set_sauna_val(int(temp))
         _LOGGER.debug("Sauna New target temp => %s", temp)
